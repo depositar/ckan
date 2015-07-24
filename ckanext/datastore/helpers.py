@@ -79,7 +79,7 @@ def get_table_names_from_sql(context, sql):
         return table_names
 
     result = context['connection'].execute(
-        'EXPLAIN (FORMAT JSON) {0}'.format(sql)).fetchone()
+        u'EXPLAIN (FORMAT JSON) {0}'.format(sql)).fetchone()
 
     table_names = []
 
