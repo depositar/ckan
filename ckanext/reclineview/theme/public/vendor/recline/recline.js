@@ -2288,6 +2288,20 @@ my.Map = Backbone.View.extend({
     var bg = new L.TileLayer(mapUrl, {maxZoom: 18, attribution: osmAttribution ,subdomains: '1234'});
     this.map.addLayer(bg);
 
+    // Add some Taijiang maps.
+    var taijiangMapUrl = 'http://gis.sinica.edu.tw/tainan/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER={id}&STYLE=_null&TILEMATRIXSET=GoogleMapsCompatible&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png';
+    // Initialize the maps info array with default mapquest.
+    var maps = {'OpenSteetMap': bg};
+    // The NLSC map
+    maps['通用版電子地圖'] = L.tileLayer('http://maps.nlsc.gov.tw/S_Maps/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=EMAP&STYLE=_null&TILEMATRIXSET=EPSG:3857&TILEMATRIX=EPSG:3857:{z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png', {attribution: '內政部國土測繪中心'});
+    // Historical maps
+    var taijiangMaps = [{'id': 'Tainan_1875', 'title': '1875 台灣府城街道圖'}, {'id': 'Tainan_1896B', 'title': '1896 台南市迅速測圖'}, {'id': 'Tainan_1907B', 'title': '1907 市區改正台南市街全圖'}, {'id': 'Tainan_20K_1917', 'title': '1917 台南市地圖'}, {'id': 'Tainan_1918', 'title': '1918 臺南市全圖'}, {'id': 'Tainan_1924B', 'title': '1924 台南市地圖'}]
+    jQuery.each(taijiangMaps, function(i, taijiangMap) {
+      maps[taijiangMap.title] = L.tileLayer(taijiangMapUrl, taijiangMap);
+    });
+    // Add layer control.
+    L.control.layers(maps, null).addTo(this.map);
+
     this.markers = new L.MarkerClusterGroup(this._clusterOptions);
 
     // rebind this (as needed in e.g. default case above)
