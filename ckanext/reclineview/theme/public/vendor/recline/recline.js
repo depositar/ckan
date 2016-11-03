@@ -2276,16 +2276,16 @@ my.Map = Backbone.View.extend({
 
   // Private: Sets up the Leaflet map control and the features layer.
   //
-  // The map uses a base layer from [Stamen](http://maps.stamen.com) based
+  // The map uses a base layer from [Thunderforest](http://www.thunderforest.com) based
   // on [OpenStreetMap](http://openstreetmap.org).
   //
   _setupMap: function(){
     var self = this;
     this.map = new L.Map(this.$map.get(0));
 
-    var mapUrl = "//stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg";
-    var osmAttribution = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.';
-    var bg = new L.TileLayer(mapUrl, {maxZoom: 18, attribution: osmAttribution, subdomains: 'abcd'});
+    var mapUrl = "https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png";
+    var osmAttribution = 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest</a>, Data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>';
+    var bg = new L.TileLayer(mapUrl, {maxZoom: 18, attribution: osmAttribution});
     this.map.addLayer(bg);
 
     // Add some Taijiang maps.
