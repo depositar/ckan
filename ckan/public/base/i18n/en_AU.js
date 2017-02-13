@@ -28,6 +28,10 @@
     null,
     "Failed to load data API information"
   ],
+  "File": [
+    null,
+    "File"
+  ],
   "Follow": [
     null,
     "Follow"
@@ -139,13 +143,5 @@
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
     null,
     "You are uploading a file. Are you sure you want to navigate away and stop this upload?"
-  ],
-  "show less": [
-    null,
-    "show less"
-  ],
-  "show more": [
-    null,
-    "show more"
   ]
 }

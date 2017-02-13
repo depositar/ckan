@@ -10,7 +10,7 @@
   ],
   "Are you sure you want to perform this action?": [
     null,
-    "Tem a certeza que deseja realizar este ação?"
+    "Tem a certeza que deseja realizar esta ação?"
   ],
   "Cancel": [
     null,
@@ -27,6 +27,10 @@
   "Failed to load data API information": [
     null,
     "Falha no carregamento da informação dos dados API"
+  ],
+  "File": [
+    null,
+    "Ficheiro"
   ],
   "Follow": [
     null,
@@ -139,13 +143,5 @@
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
     null,
     "Está a enviar um ficheiro. Tem a certeza de que deseja sair e parar o envio?"
-  ],
-  "show less": [
-    null,
-    "mostrar menos"
-  ],
-  "show more": [
-    null,
-    "mostrar mais"
   ]
 }

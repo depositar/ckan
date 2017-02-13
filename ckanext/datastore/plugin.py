@@ -1,13 +1,15 @@
+# encoding: utf-8
+
 import sys
 import logging
 import re
 
-import pylons
 import sqlalchemy.engine.url as sa_url
 
 import ckan.plugins as p
 import ckan.logic as logic
 import ckan.model as model
+from ckan.common import config
 import ckanext.datastore.logic.action as action
 import ckanext.datastore.logic.auth as auth
 import ckanext.datastore.db as db
@@ -80,6 +82,10 @@ class DatastorePlugin(p.SingletonPlugin):
         # available and permissions do not have to be changed. In legacy mode, the
         # datastore runs on PG prior to 9.0 (for example 8.4).
         self.legacy_mode = _is_legacy_mode(self.config)
+
+        # Check whether users have disabled datastore_search_sql
+        self.enable_sql_search = p.toolkit.asbool(
+            self.config.get('ckan.datastore.sqlsearch.enabled', True))
 
         datapusher_formats = config.get('datapusher.formats', '').split()
         self.datapusher_formats = datapusher_formats or DEFAULT_FORMATS
@@ -243,10 +249,14 @@ class DatastorePlugin(p.SingletonPlugin):
                    'datastore_upsert': action.datastore_upsert,
                    'datastore_delete': action.datastore_delete,
                    'datastore_search': action.datastore_search,
+                   'datastore_info': action.datastore_info,
                   }
         if not self.legacy_mode:
+            if self.enable_sql_search:
+                # Only enable search_sql if the config does not disable it
+                actions.update({'datastore_search_sql':
+                                 action.datastore_search_sql})
             actions.update({
-                'datastore_search_sql': action.datastore_search_sql,
                 'datastore_make_private': action.datastore_make_private,
                 'datastore_make_public': action.datastore_make_public})
         return actions
@@ -255,6 +265,7 @@ class DatastorePlugin(p.SingletonPlugin):
         return {'datastore_create': auth.datastore_create,
                 'datastore_upsert': auth.datastore_upsert,
                 'datastore_delete': auth.datastore_delete,
+                'datastore_info': auth.datastore_info,
                 'datastore_search': auth.datastore_search,
                 'datastore_search_sql': auth.datastore_search_sql,
                 'datastore_change_permissions': auth.datastore_change_permissions}
@@ -273,21 +284,9 @@ class DatastorePlugin(p.SingletonPlugin):
                 controller='ckanext.datastore.controller:DatastoreController',
                 action='dump', resource_id=resource_dict['id'])
 
-        connection = None
+        if 'datastore_active' not in resource_dict:
+            resource_dict[u'datastore_active'] = False
 
-        resource_dict['datastore_active'] = False
-
-        try:
-            connection = self.read_engine.connect()
-            result = connection.execute(
-                'SELECT 1 FROM "_table_metadata" WHERE name = %s AND alias_of IS NULL',
-                resource_dict['id']
-            ).fetchone()
-            if result:
-                resource_dict['datastore_active'] = True
-        finally:
-            if connection:
-                connection.close()
         return resource_dict
 
     def datastore_validate(self, context, data_dict, fields_types):
@@ -495,7 +494,7 @@ class DatastorePlugin(p.SingletonPlugin):
         return statements_str, rank_columns_str
 
     def _fts_lang(self, lang=None):
-        default_fts_lang = pylons.config.get('ckan.datastore.default_fts_lang')
+        default_fts_lang = config.get('ckan.datastore.default_fts_lang')
         if default_fts_lang is None:
             default_fts_lang = u'english'
         return lang or default_fts_lang

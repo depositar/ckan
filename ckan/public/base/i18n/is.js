@@ -28,6 +28,10 @@
     null,
     "Villa kom upp við að sækja upplýsingar um API gögn"
   ],
+  "File": [
+    null,
+    "Skrá"
+  ],
   "Follow": [
     null,
     "Fylgjast með"
@@ -139,13 +143,5 @@
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
     null,
     "Þú ert að sækja skrá. Ertu viss um að viljir fara af síðunni og stöðva niðurhalið? "
-  ],
-  "show less": [
-    null,
-    "sýna færri"
-  ],
-  "show more": [
-    null,
-    "sýna fleiri"
   ]
 }

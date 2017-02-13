@@ -28,6 +28,10 @@
     null,
     "Falló carga de información de datos de API"
   ],
+  "File": [
+    null,
+    "Archivo"
+  ],
   "Follow": [
     null,
     "Seguir"
@@ -139,13 +143,5 @@
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
     null,
     "Estás subiendo un archivo. ¿Estás seguro que quieres salir y detener esta subida?"
-  ],
-  "show less": [
-    null,
-    "mostrar menos"
-  ],
-  "show more": [
-    null,
-    "mostrar más"
   ]
 }

@@ -28,6 +28,10 @@
     null,
     "Не вдалося завантажити інформацію про дані API"
   ],
+  "File": [
+    null,
+    "Файл"
+  ],
   "Follow": [
     null,
     "Стежити"
@@ -139,13 +143,5 @@
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
     null,
     "Ви вкладаєте файл. Ви впевнені, що хочете перейти на іншу сторінку і припинити вкладення?"
-  ],
-  "show less": [
-    null,
-    "показати менше"
-  ],
-  "show more": [
-    null,
-    "показати більше"
   ]
 }

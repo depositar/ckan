@@ -28,6 +28,10 @@
     null,
     "Nalaganje podatkov o API informacijah ni uspelo"
   ],
+  "File": [
+    null,
+    "Datoteka"
+  ],
   "Follow": [
     null,
     "Sledi"
@@ -139,13 +143,5 @@
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
     null,
     "Trenutno prenašate datoteko. Ste prepričani da se želite preusmeriti drugam in prekiniti ta prenos?"
-  ],
-  "show less": [
-    null,
-    "pokaži manj"
-  ],
-  "show more": [
-    null,
-    "pokaži več"
   ]
 }

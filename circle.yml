@@ -15,6 +15,7 @@ machine:
         version: 0.10.33
 
 dependencies:
+
     pre:
         - "[ -e ~/.local/bin/circleci-matrix ]
            || mkdir -p ~/.local/bin
@@ -22,8 +23,8 @@ dependencies:
            && chmod +x ~/.local/bin/circleci-matrix"
 
     override:
-        - pip install -r requirements.txt --allow-all-external
-        - pip install -r dev-requirements.txt --allow-all-external
+        - pip install -r requirements.txt
+        - pip install -r dev-requirements.txt
         - python setup.py develop
 
     post:
@@ -38,6 +39,7 @@ dependencies:
         - ~/nvm/v0.10.33/bin/phantomjs
 
 database:
+
     post:
         - sudo -E -u postgres ./bin/postgres_init/1_create_ckan_db.sh
         - sudo -E -u postgres ./bin/postgres_init/2_create_ckan_datastore_db.sh
@@ -47,12 +49,13 @@ database:
         - cp -R /opt/solr-4.3.1 $SOLR_HOME
         - cd $SOLR_HOME/example; java -jar start.jar >> $HOME/solr.log:
             background: true
-        - sleep 5
+        - while ! grep "Started" $HOME/solr.log; do sleep 0.1; done
         - ./bin/solr_init/create_core.sh
 
         - paster db init -c test-core.ini
 
 test:
+
     override:
         - circleci-matrix:
             parallel: true

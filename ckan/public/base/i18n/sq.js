@@ -28,6 +28,10 @@
     null,
     "Dështoi ngarkimi i informacioneve të të dhënave të API-së"
   ],
+  "File": [
+    null,
+    "Skedari"
+  ],
   "Follow": [
     null,
     "Ndjek"
@@ -139,13 +143,5 @@
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
     null,
     "Ju jeni duke ngarkuar një skedar. A jeni të sigurt që doni të largoheni dhe t'a ndalni këtë ngarkim?"
-  ],
-  "show less": [
-    null,
-    "Shfaq më pak"
-  ],
-  "show more": [
-    null,
-    "Shfaq më shumë"
   ]
 }

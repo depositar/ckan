@@ -28,6 +28,10 @@
     null,
     "Lettura dei dati attraverso le API fallita"
   ],
+  "File": [
+    null,
+    "File"
+  ],
   "Follow": [
     null,
     "Segui"
@@ -139,13 +143,5 @@
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
     null,
     "Stai caricando un file. Sei sicuro che vuoi abbandonare questa pagina e interrompere il caricamento?"
-  ],
-  "show less": [
-    null,
-    "visualizzane meno"
-  ],
-  "show more": [
-    null,
-    "visualizzane di più"
   ]
 }

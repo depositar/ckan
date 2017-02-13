@@ -1,11 +1,14 @@
+# encoding: utf-8
+
 '''API functions for deleting data from CKAN.'''
 
-from sqlalchemy import or_
+import sqlalchemy as sqla
 
 import ckan.logic
 import ckan.logic.action
 import ckan.plugins as plugins
 import ckan.lib.dictization.model_dictize as model_dictize
+from ckan import authz
 
 from ckan.common import _
 
@@ -47,7 +50,7 @@ def user_delete(context, data_dict):
     user.delete()
 
     user_memberships = model.Session.query(model.Member).filter(
-        model.Member.table_id == user_id).all()
+        model.Member.table_id == user.id).all()
 
     for membership in user_memberships:
         membership.delete()
@@ -57,6 +60,9 @@ def user_delete(context, data_dict):
 
 def package_delete(context, data_dict):
     '''Delete a dataset (package).
+
+    This makes the dataset disappear from all web & API views, apart from the
+    trash.
 
     You must be authorized to delete the dataset.
 
@@ -95,6 +101,53 @@ def package_delete(context, data_dict):
 
     model.repo.commit()
 
+
+def dataset_purge(context, data_dict):
+    '''Purge a dataset.
+
+    .. warning:: Purging a dataset cannot be undone!
+
+    Purging a database completely removes the dataset from the CKAN database,
+    whereas deleting a dataset simply marks the dataset as deleted (it will no
+    longer show up in the front-end, but is still in the db).
+
+    You must be authorized to purge the dataset.
+
+    :param id: the name or id of the dataset to be purged
+    :type id: string
+
+    '''
+    from sqlalchemy import or_
+
+    model = context['model']
+    id = _get_or_bust(data_dict, 'id')
+
+    pkg = model.Package.get(id)
+    context['package'] = pkg
+    if pkg is None:
+        raise NotFound('Dataset was not found')
+
+    _check_access('dataset_purge', context, data_dict)
+
+    members = model.Session.query(model.Member) \
+                   .filter(model.Member.table_id == pkg.id) \
+                   .filter(model.Member.table_name == 'package')
+    if members.count() > 0:
+        for m in members.all():
+            m.purge()
+
+    for r in model.Session.query(model.PackageRelationship).filter(
+            or_(model.PackageRelationship.subject_package_id == pkg.id,
+                model.PackageRelationship.object_package_id == pkg.id)).all():
+        r.purge()
+
+    pkg = model.Package.get(id)
+    # no new_revision() needed since there are no object_revisions created
+    # during purge
+    pkg.purge()
+    model.repo.commit_and_remove()
+
+
 def resource_delete(context, data_dict):
     '''Delete a resource from a dataset.
 
@@ -117,7 +170,7 @@ def resource_delete(context, data_dict):
     package_id = entity.get_package_id()
 
     pkg_dict = _get_action('package_show')(context, {'id': package_id})
-    
+
     for plugin in plugins.PluginImplementations(plugins.IResourceController):
         plugin.before_delete(context, data_dict,
                              pkg_dict.get('resources', []))
@@ -219,53 +272,6 @@ def package_relationship_delete(context, data_dict):
     relationship.delete()
     model.repo.commit()
 
-def related_delete(context, data_dict):
-    '''Delete a related item from a dataset.
-
-    You must be a sysadmin or the owner of the related item to delete it.
-
-    :param id: the id of the related item
-    :type id: string
-
-    '''
-    model = context['model']
-    session = context['session']
-    user = context['user']
-    userobj = model.User.get(user)
-
-    id = _get_or_bust(data_dict, 'id')
-
-    entity = model.Related.get(id)
-
-    if entity is None:
-        raise NotFound
-
-    _check_access('related_delete',context, data_dict)
-
-    related_dict = model_dictize.related_dictize(entity, context)
-    activity_dict = {
-        'user_id': userobj.id,
-        'object_id': entity.id,
-        'activity_type': 'deleted related item',
-    }
-    activity_dict['data'] = {
-        'related': related_dict
-    }
-    activity_create_context = {
-        'model': model,
-        'user': user,
-        'defer_commit': True,
-        'ignore_auth': True,
-        'session': session
-    }
-
-    _get_action('activity_create')(activity_create_context, activity_dict)
-    session.commit()
-
-    entity.delete()
-    model.repo.commit()
-
-
 def member_delete(context, data_dict=None):
     '''Remove an object (e.g. a user, dataset or group) from a group.
 
@@ -316,6 +322,8 @@ def _group_or_org_delete(context, data_dict, is_org=False):
     :type id: string
 
     '''
+    from sqlalchemy import or_
+
     model = context['model']
     user = context['user']
     id = _get_or_bust(data_dict, 'id')
@@ -417,12 +425,34 @@ def _group_or_org_purge(context, data_dict, is_org=False):
     else:
         _check_access('group_purge', context, data_dict)
 
-    members = model.Session.query(model.Member)
-    members = members.filter(model.Member.group_id == group.id)
+    if is_org:
+        # Clear the owner_org field
+        datasets = model.Session.query(model.Package) \
+                        .filter_by(owner_org=group.id) \
+                        .filter(model.Package.state != 'deleted') \
+                        .count()
+        if datasets:
+            if not authz.check_config_permission('ckan.auth.create_unowned_dataset'):
+                raise ValidationError('Organization cannot be purged while it '
+                                      'still has datasets')
+            pkg_table = model.package_table
+            # using Core SQLA instead of the ORM should be faster
+            model.Session.execute(
+                pkg_table.update().where(
+                    sqla.and_(pkg_table.c.owner_org == group.id,
+                              pkg_table.c.state != 'deleted')
+                ).values(owner_org=None)
+            )
+
+    # Delete related Memberships
+    members = model.Session.query(model.Member) \
+                   .filter(sqla.or_(model.Member.group_id == group.id,
+                                    model.Member.table_id == group.id))
     if members.count() > 0:
-        model.repo.new_revision()
+        # no need to do new_revision() because Member is not revisioned, nor
+        # does it cascade delete any revisioned objects
         for m in members.all():
-            m.delete()
+            m.purge()
         model.repo.commit_and_remove()
 
     group = model.Group.get(id)
@@ -438,6 +468,8 @@ def group_purge(context, data_dict):
     Purging a group completely removes the group from the CKAN database,
     whereas deleting a group simply marks the group as deleted (it will no
     longer show up in the frontend, but is still in the db).
+
+    Datasets in the organization will remain, just not in the purged group.
 
     You must be authorized to purge the group.
 
@@ -456,6 +488,9 @@ def organization_purge(context, data_dict):
     database, whereas deleting an organization simply marks the organization as
     deleted (it will no longer show up in the frontend, but is still in the
     db).
+
+    Datasets owned by the organization will remain, just not in an
+    organization any more.
 
     You must be authorized to purge the organization.
 

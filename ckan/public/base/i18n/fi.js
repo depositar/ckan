@@ -28,6 +28,10 @@
     null,
     "Data API:n tietojen lataaminen epäonnistui"
   ],
+  "File": [
+    null,
+    "Tiedosto"
+  ],
   "Follow": [
     null,
     "Seuraa"
@@ -139,13 +143,5 @@
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
     null,
     "Olet parhaillaan lataamassa tiedostoa palvelimelle. Oletko varma, että haluat poistua sivulta ja keskeyttää lataamisen?"
-  ],
-  "show less": [
-    null,
-    "näytä vähemmän"
-  ],
-  "show more": [
-    null,
-    "näytä lisää"
   ]
 }

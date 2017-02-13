@@ -28,6 +28,10 @@
     null,
     "Không thể tải thông tin giao diện người sử dụng dữ liệu "
   ],
+  "File": [
+    null,
+    "Tệp"
+  ],
   "Follow": [
     null,
     "Theo dõi"
@@ -139,13 +143,5 @@
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
     null,
     "Bạn đang tải tệp. Bạn muốn chuyển hướng và ngừng tải tệp?"
-  ],
-  "show less": [
-    null,
-    "Hiển thị ít hơn"
-  ],
-  "show more": [
-    null,
-    "Hiển thị thêm"
   ]
 }

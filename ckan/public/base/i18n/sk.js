@@ -28,6 +28,10 @@
     null,
     "Zlyhalo načítanie informácie o dátovom API"
   ],
+  "File": [
+    null,
+    "Súbor"
+  ],
   "Follow": [
     null,
     "Odoberať"
@@ -74,11 +78,11 @@
   ],
   "Reorder resources": [
     null,
-    "Preusporiadať dátové zdroje"
+    "Preusporiadať zdroje"
   ],
   "Resource uploaded": [
     null,
-    "Dátový zdroj nahraný"
+    "Zdroj nahraný"
   ],
   "Save order": [
     null,
@@ -102,7 +106,7 @@
   ],
   "There is no API data to load for this resource": [
     null,
-    "Neexistuje dátové API na načítanie tohto dátového zdroja"
+    "Neexistuje dátové API na načítanie tohto zdroja"
   ],
   "URL": [
     null,
@@ -139,13 +143,5 @@
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
     null,
     "Nahrávate súbor. Chcete odísť preč a prerušiť nahrávanie?"
-  ],
-  "show less": [
-    null,
-    "ukázať menej"
-  ],
-  "show more": [
-    null,
-    "ukázať viac"
   ]
 }

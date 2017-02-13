@@ -28,6 +28,10 @@
     null,
     "데이터 API 정보를 읽어오는데 실패했습니다"
   ],
+  "File": [
+    null,
+    "파일"
+  ],
   "Follow": [
     null,
     "Follow"
@@ -139,13 +143,5 @@
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
     null,
     "파일을 업로드중입니다. 탐색을 위해 업로드를 중지하겠습니까?"
-  ],
-  "show less": [
-    null,
-    "적게 보기"
-  ],
-  "show more": [
-    null,
-    "더 보기"
   ]
 }
