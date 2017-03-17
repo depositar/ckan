@@ -178,6 +178,12 @@ def resource_delete(context, data_dict):
     if pkg_dict.get('resources'):
         pkg_dict['resources'] = [r for r in pkg_dict['resources'] if not
                 r['id'] == id]
+
+    # decode url before writing to database
+    from urllib import unquote
+    for res in pkg_dict['resources']:
+        res['url'] = unquote(res['url'].encode('utf8')).decode('utf8')
+
     try:
         pkg_dict = _get_action('package_update')(context, pkg_dict)
     except ValidationError, e:

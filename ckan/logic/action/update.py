@@ -94,6 +94,10 @@ def resource_update(context, data_dict):
 
     upload = uploader.get_resource_uploader(data_dict)
 
+    # decode url before writing to database
+    from urllib import unquote
+    data_dict['url'] = unquote(data_dict['url'].encode('utf8')).decode('utf8')
+
     pkg_dict['resources'][n] = data_dict
 
     try:
@@ -274,6 +278,11 @@ def package_update(context, data_dict):
     if errors:
         model.Session.rollback()
         raise ValidationError(errors)
+
+    # decode url before writing to database
+    from urllib import unquote
+    for res in data['resources']:
+        res['url'] = unquote(res['url'].encode('utf8')).decode('utf8')
 
     rev = model.repo.new_revision()
     rev.author = user

@@ -298,6 +298,11 @@ def resource_create(context, data_dict):
 
     pkg_dict['resources'].append(data_dict)
 
+    # decode url before writing to database
+    from urllib import unquote
+    for res in pkg_dict['resources']:
+        res['url'] = unquote(res['url'].encode('utf8')).decode('utf8')
+
     try:
         context['defer_commit'] = True
         context['use_cache'] = False
