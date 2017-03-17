@@ -154,12 +154,6 @@ def munge_filename(filename):
     # Ignore path
     filename = os.path.split(filename)[1]
 
-    # Clean up
-    filename = filename.lower().strip()
-    filename = substitute_ascii_equivalents(filename)
-    filename = re.sub(ur'[^a-zA-Z0-9_. -]', '', filename).replace(u' ', u'-')
-    filename = re.sub(ur'-+', u'-', filename)
-
     # Enforce length constraints
     name, ext = os.path.splitext(filename)
     ext = ext[:MAX_FILENAME_EXTENSION_LENGTH]

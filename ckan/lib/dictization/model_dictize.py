@@ -113,7 +113,7 @@ def resource_dictize(res, context):
                                     action='resource_download',
                                     id=resource['package_id'],
                                     resource_id=res.id,
-                                    filename=url.split('/')[-1],
+                                    filename=cleaned_name,
                                     qualified=True)
     elif resource['url'] and not urlparse.urlsplit(url).scheme and not context.get('for_edit'):
         resource['url'] = u'http://' + url.lstrip('/')
