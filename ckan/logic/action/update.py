@@ -281,8 +281,9 @@ def package_update(context, data_dict):
 
     # decode url before writing to database
     from urllib import unquote
-    for res in data['resources']:
-        res['url'] = unquote(res['url'].encode('utf8')).decode('utf8')
+    if data.get('resources'):
+        for res in data['resources']:
+            res['url'] = unquote(res['url'].encode('utf8')).decode('utf8')
 
     rev = model.repo.new_revision()
     rev.author = user

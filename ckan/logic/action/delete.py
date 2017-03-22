@@ -175,14 +175,13 @@ def resource_delete(context, data_dict):
         plugin.before_delete(context, data_dict,
                              pkg_dict.get('resources', []))
 
+    from urllib import unquote
     if pkg_dict.get('resources'):
         pkg_dict['resources'] = [r for r in pkg_dict['resources'] if not
                 r['id'] == id]
-
-    # decode url before writing to database
-    from urllib import unquote
-    for res in pkg_dict['resources']:
-        res['url'] = unquote(res['url'].encode('utf8')).decode('utf8')
+        # decode url before writing to database
+        for res in pkg_dict['resources']:
+            res['url'] = unquote(res['url'].encode('utf8')).decode('utf8')
 
     try:
         pkg_dict = _get_action('package_update')(context, pkg_dict)
