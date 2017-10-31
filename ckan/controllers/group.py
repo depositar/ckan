@@ -332,7 +332,8 @@ class GroupController(base.BaseController):
                     facets[facet] = facet
 
             # Facet titles
-            self._update_facet_titles(facets, group_type)
+            for plugin in plugins.PluginImplementations(plugins.IFacets):
+                facets = plugin.group_facets(facets, group_type, None)
 
             if 'capacity' in facets and (group_type != 'organization' or
                                          not user_member_of_orgs):
@@ -386,11 +387,6 @@ class GroupController(base.BaseController):
 
         self._setup_template_variables(context, {'id': id},
                                        group_type=group_type)
-
-    def _update_facet_titles(self, facets, group_type):
-        for plugin in plugins.PluginImplementations(plugins.IFacets):
-            facets = plugin.group_facets(
-                facets, group_type, None)
 
     def bulk_process(self, id):
         ''' Allow bulk processing of datasets for an organization.  Make
