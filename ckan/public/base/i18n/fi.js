@@ -1,147 +1,180 @@
 {
   "": {
-    "domain": "ckan",
-    "lang": "fi",
+    "domain": "ckan", 
+    "lang": "fi", 
     "plural-forms": "nplurals=2; plural=(n != 1);"
-  },
+  }, 
+  "Add Filter": [
+    null, 
+    "Lisää suodatin"
+  ], 
   "An Error Occurred": [
-    null,
+    null, 
     "Tapahtui virhe"
-  ],
+  ], 
   "Are you sure you want to perform this action?": [
-    null,
+    null, 
     "Oletko varma, että haluat tehdä tämän?"
-  ],
+  ], 
   "Cancel": [
-    null,
+    null, 
     "Peruuta"
-  ],
+  ], 
   "Confirm": [
-    null,
+    null, 
     "Vahvista"
-  ],
+  ], 
+  "Could not load view": [
+    null, 
+    "Näkymää ei pystytty lataamaan"
+  ], 
+  "DataProxy returned an error": [
+    null, 
+    "Dataproxy palautti virheen"
+  ], 
+  "DataStore returned an error": [
+    null, 
+    "DataStore palautti virheen"
+  ], 
   "Edit": [
-    null,
+    null, 
     "Muokkaa"
-  ],
+  ], 
   "Failed to load data API information": [
-    null,
+    null, 
     "Data API:n tietojen lataaminen epäonnistui"
-  ],
+  ], 
   "File": [
-    null,
+    null, 
     "Tiedosto"
-  ],
+  ], 
+  "Filters": [
+    null, 
+    "Suodattimet"
+  ], 
   "Follow": [
-    null,
+    null, 
     "Seuraa"
-  ],
+  ], 
+  "Graph": [
+    null, 
+    "Kaavio"
+  ], 
+  "Grid": [
+    null, 
+    "Taulokku"
+  ], 
   "Hide": [
-    null,
+    null, 
     "Piilota"
-  ],
+  ], 
   "Image": [
-    null,
+    null, 
     "Kuva"
-  ],
+  ], 
   "Input is too short, must be at least one character": [
-    null,
-    "Liian lyhyt, pitää olla vähintään yksi merkki"
-  ],
+    "Input is too short, must be at least %(num)d characters", 
+    "Syöte on liian lyhyt, pitää olla vähintään yksi merkki", 
+    "Syöte on liian lyhyt, tulee olla vähintään %(num)dmerkkiä"
+  ], 
   "Link": [
-    null,
+    null, 
     "Linkki"
-  ],
+  ], 
   "Link to a URL on the internet (you can also link to an API)": [
-    null,
+    null, 
     "Linkki URL-osoitteeseen internetissä (voit myös linkittää API:in)"
-  ],
+  ], 
   "Loading...": [
-    null,
+    null, 
     "Ladataan..."
-  ],
+  ], 
+  "Map": [
+    null, 
+    "Kartta"
+  ], 
   "No matches found": [
-    null,
+    null, 
     "Ei yhtään osumaa"
-  ],
+  ], 
   "Please Confirm Action": [
-    null,
+    null, 
     "Vahvista toimenpide"
-  ],
+  ], 
   "Remove": [
-    null,
+    null, 
     "Poista"
-  ],
-  "Reorder resource view": [
-    null,
-    "Uudelleenjärjestä resurssinäyttö"
-  ],
-  "Reorder resources": [
-    null,
-    "Uudelleenjärjestä resurssit"
-  ],
+  ], 
   "Resource uploaded": [
-    null,
+    null, 
     "Resurssi on ladattu"
-  ],
+  ], 
   "Save order": [
-    null,
+    null, 
     "Tallenna järjestys"
-  ],
+  ], 
   "Saving...": [
-    null,
+    null, 
     "Tallentaa..."
-  ],
+  ], 
+  "Select a field": [
+    null, 
+    "Valitse tietokenttä"
+  ], 
   "Show more": [
-    null,
+    null, 
     "Näytä enemmän"
-  ],
+  ], 
   "Start typing…": [
-    null,
+    null, 
     "Ala kirjoittaa..."
-  ],
+  ], 
   "There are unsaved modifications to this form": [
-    null,
+    null, 
     "Lomakkeella on tallentamattomia tietoja"
-  ],
+  ], 
   "There is no API data to load for this resource": [
-    null,
+    null, 
     "API:n kautta ei ole ladattavissa dataa tälle resurssille"
-  ],
+  ], 
   "URL": [
-    null,
+    null, 
     "URL"
-  ],
+  ], 
   "Unable to authenticate upload": [
-    null,
+    null, 
     "Lataamisen autentikointi epäonnistui"
-  ],
+  ], 
   "Unable to get data for uploaded file": [
-    null,
+    null, 
     "Datan saaminen ladattavaan tiedostoon epäonnistui"
-  ],
+  ], 
   "Unable to upload file": [
-    null,
+    null, 
     "Tiedoston lataaminen epäonnistui"
-  ],
+  ], 
   "Unfollow": [
-    null,
+    null, 
     "Lopeta seuraaminen"
-  ],
+  ], 
   "Upload": [
-    null,
+    null, 
     "Lataa"
-  ],
+  ], 
   "Upload a file": [
-    null,
+    null, 
     "Tallenna tiedosto"
-  ],
+  ], 
   "Upload a file on your computer": [
-    null,
+    null, 
     "Lataa tiedosto työasemalta"
-  ],
+  ], 
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
-    null,
+    null, 
     "Olet parhaillaan lataamassa tiedostoa palvelimelle. Oletko varma, että haluat poistua sivulta ja keskeyttää lataamisen?"
+  ], 
+  "error loading view": [
+    null, 
+    "virhe ladattaessa näkymää"
   ]
 }

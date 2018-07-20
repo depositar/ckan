@@ -1,147 +1,180 @@
 {
   "": {
-    "domain": "ckan",
-    "lang": "no",
+    "domain": "ckan", 
+    "lang": "no", 
     "plural-forms": "nplurals=2; plural=(n != 1);"
-  },
+  }, 
+  "Add Filter": [
+    null, 
+    "Opprett filter"
+  ], 
   "An Error Occurred": [
-    null,
+    null, 
     "En feil oppsto"
-  ],
+  ], 
   "Are you sure you want to perform this action?": [
-    null,
+    null, 
     "Er du sikker på at du vil utføre denne handlingen?"
-  ],
+  ], 
   "Cancel": [
-    null,
+    null, 
     "Avbryt"
-  ],
+  ], 
   "Confirm": [
-    null,
+    null, 
     "Bekreft"
-  ],
+  ], 
+  "Could not load view": [
+    null, 
+    "Klarte ikke å laste visning"
+  ], 
+  "DataProxy returned an error": [
+    null, 
+    "Feilmelding fra DataProxy"
+  ], 
+  "DataStore returned an error": [
+    null, 
+    "Feilmelding fra DataStore"
+  ], 
   "Edit": [
-    null,
+    null, 
     "Rediger"
-  ],
+  ], 
   "Failed to load data API information": [
-    null,
+    null, 
     "Kunne ikke laste informasjon om data-API"
-  ],
+  ], 
   "File": [
-    null,
+    null, 
     "Fil"
-  ],
+  ], 
+  "Filters": [
+    null, 
+    "Filtere"
+  ], 
   "Follow": [
-    null,
+    null, 
     "Følg"
-  ],
+  ], 
+  "Graph": [
+    null, 
+    "Graf"
+  ], 
+  "Grid": [
+    null, 
+    "Rutenett"
+  ], 
   "Hide": [
-    null,
+    null, 
     "Skjul"
-  ],
+  ], 
   "Image": [
-    null,
+    null, 
     "Bilde"
-  ],
+  ], 
   "Input is too short, must be at least one character": [
-    null,
-    "For kort, må være minst ett tegn"
-  ],
+    "Input is too short, must be at least %(num)d characters", 
+    "For kort, må være minst ett tegn", 
+    "For kort, må være minst %(num)d tegn"
+  ], 
   "Link": [
-    null,
+    null, 
     "Lenke"
-  ],
+  ], 
   "Link to a URL on the internet (you can also link to an API)": [
-    null,
+    null, 
     "Lenke til en URL på internett (du kan også lenke til et API)"
-  ],
+  ], 
   "Loading...": [
-    null,
+    null, 
     "Laster..."
-  ],
+  ], 
+  "Map": [
+    null, 
+    "Kart"
+  ], 
   "No matches found": [
-    null,
+    null, 
     "Ingen treff"
-  ],
+  ], 
   "Please Confirm Action": [
-    null,
+    null, 
     "Bekreft handling"
-  ],
+  ], 
   "Remove": [
-    null,
+    null, 
     "Fjern"
-  ],
-  "Reorder resource view": [
-    null,
-    "Forandre rekkefølgen i ressursvisning"
-  ],
-  "Reorder resources": [
-    null,
-    "Forandre rekkefølge på ressurser"
-  ],
+  ], 
   "Resource uploaded": [
-    null,
+    null, 
     "Ressurs lastet opp"
-  ],
+  ], 
   "Save order": [
-    null,
+    null, 
     "Lagre rekkefølge"
-  ],
+  ], 
   "Saving...": [
-    null,
+    null, 
     "Lagrer..."
-  ],
+  ], 
+  "Select a field": [
+    null, 
+    "Velg et felt"
+  ], 
   "Show more": [
-    null,
+    null, 
     "Vis mer"
-  ],
+  ], 
   "Start typing…": [
-    null,
+    null, 
     "Skriv inn..."
-  ],
+  ], 
   "There are unsaved modifications to this form": [
-    null,
+    null, 
     "Du har gjort endringer i skjemaet som ikke er lagret"
-  ],
+  ], 
   "There is no API data to load for this resource": [
-    null,
+    null, 
     "Ingen API-data kan lastes for denne ressursen"
-  ],
+  ], 
   "URL": [
-    null,
+    null, 
     "URL"
-  ],
+  ], 
   "Unable to authenticate upload": [
-    null,
+    null, 
     "Klarer ikke å autentisere opplasting"
-  ],
+  ], 
   "Unable to get data for uploaded file": [
-    null,
+    null, 
     "Finner ikke data for opplastet fil"
-  ],
+  ], 
   "Unable to upload file": [
-    null,
+    null, 
     "Klarer ikke å laste opp fil"
-  ],
+  ], 
   "Unfollow": [
-    null,
+    null, 
     "Ikke følg"
-  ],
+  ], 
   "Upload": [
-    null,
+    null, 
     "Opplasting"
-  ],
+  ], 
   "Upload a file": [
-    null,
+    null, 
     "Last opp en fil"
-  ],
+  ], 
   "Upload a file on your computer": [
-    null,
+    null, 
     "Last opp en fil til datamaskinen din"
-  ],
+  ], 
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
-    null,
+    null, 
     "Du laster opp en fil. Er du sikker på at du vil forlate siden og stoppe denne opplastingen?"
+  ], 
+  "error loading view": [
+    null, 
+    "feil ved lasting av visning"
   ]
 }

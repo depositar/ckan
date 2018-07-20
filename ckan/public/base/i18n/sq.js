@@ -1,147 +1,156 @@
 {
   "": {
-    "domain": "ckan",
-    "lang": "sq",
+    "domain": "ckan", 
+    "lang": "sq", 
     "plural-forms": "nplurals=2; plural=(n != 1);"
-  },
+  }, 
+  "Add Filter": [
+    null, 
+    "Shtoni filterin"
+  ], 
   "An Error Occurred": [
-    null,
+    null, 
     "Ka ndodhur një gabim"
-  ],
+  ], 
   "Are you sure you want to perform this action?": [
-    null,
+    null, 
     "A jeni te sigurte qe doni ta kryeni këtë veprim?"
-  ],
+  ], 
   "Cancel": [
-    null,
+    null, 
     "Anulo"
-  ],
+  ], 
   "Confirm": [
-    null,
+    null, 
     "Konfirmo"
-  ],
+  ], 
   "Edit": [
-    null,
+    null, 
     "Modifikoni"
-  ],
+  ], 
   "Failed to load data API information": [
-    null,
+    null, 
     "Dështoi ngarkimi i informacioneve të të dhënave të API-së"
-  ],
+  ], 
   "File": [
-    null,
+    null, 
     "Skedari"
-  ],
+  ], 
+  "Filters": [
+    null, 
+    "Filterët"
+  ], 
   "Follow": [
-    null,
+    null, 
     "Ndjek"
-  ],
+  ], 
+  "Graph": [
+    null, 
+    "Grafi"
+  ], 
   "Hide": [
-    null,
+    null, 
     "Fsheh"
-  ],
+  ], 
   "Image": [
-    null,
+    null, 
     "Figurë"
-  ],
+  ], 
   "Input is too short, must be at least one character": [
-    null,
-    "E dhëna është shum e shkurtër, duhet të jet të paktën një karakter"
-  ],
+    "Input is too short, must be at least %(num)d characters", 
+    "", 
+    ""
+  ], 
   "Link": [
-    null,
+    null, 
     "Lidhëse"
-  ],
+  ], 
   "Link to a URL on the internet (you can also link to an API)": [
-    null,
+    null, 
     "Lidhu me një URL në internet ( ju mund të lidheni me një API)"
-  ],
+  ], 
   "Loading...": [
-    null,
+    null, 
     "Duke u ngarkuar..."
-  ],
+  ], 
+  "Map": [
+    null, 
+    "Harta"
+  ], 
   "No matches found": [
-    null,
+    null, 
     "Asnjë rezultat nuk u përputh"
-  ],
+  ], 
   "Please Confirm Action": [
-    null,
+    null, 
     "Ju lutem konfirmoni veprimin"
-  ],
+  ], 
   "Remove": [
-    null,
+    null, 
     "Largo"
-  ],
-  "Reorder resource view": [
-    null,
-    "Ri-renditni pamjen e burumit"
-  ],
-  "Reorder resources": [
-    null,
-    "rirendit burimet"
-  ],
+  ], 
   "Resource uploaded": [
-    null,
+    null, 
     "Burimi u ngarkua"
-  ],
+  ], 
   "Save order": [
-    null,
+    null, 
     "Ruaj renditjen"
-  ],
+  ], 
   "Saving...": [
-    null,
+    null, 
     "Duke u ruajtur..."
-  ],
+  ], 
   "Show more": [
-    null,
+    null, 
     "Shfaq më shumë"
-  ],
+  ], 
   "Start typing…": [
-    null,
+    null, 
     "Fillo shkrimin..."
-  ],
+  ], 
   "There are unsaved modifications to this form": [
-    null,
+    null, 
     "Forma përmbanë ndryshime të paruajtura"
-  ],
+  ], 
   "There is no API data to load for this resource": [
-    null,
+    null, 
     "Nuk ka ndonjë API të të dhënave që të ngarkoj burimin"
-  ],
+  ], 
   "URL": [
-    null,
+    null, 
     "URL"
-  ],
+  ], 
   "Unable to authenticate upload": [
-    null,
+    null, 
     "E pamundur të autentikohet ngarkimi"
-  ],
+  ], 
   "Unable to get data for uploaded file": [
-    null,
+    null, 
     "E pamundur të nxirren të dhënat për dosjen e ngarkuar"
-  ],
+  ], 
   "Unable to upload file": [
-    null,
+    null, 
     "Skedari nuk u ngarkua"
-  ],
+  ], 
   "Unfollow": [
-    null,
+    null, 
     "Mos ndjek"
-  ],
+  ], 
   "Upload": [
-    null,
+    null, 
     "Ngarko"
-  ],
+  ], 
   "Upload a file": [
-    null,
+    null, 
     "Ngarko një skedar"
-  ],
+  ], 
   "Upload a file on your computer": [
-    null,
+    null, 
     "Ngarko një skedar në kompjuerin tuaj"
-  ],
+  ], 
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
-    null,
+    null, 
     "Ju jeni duke ngarkuar një skedar. A jeni të sigurt që doni të largoheni dhe t'a ndalni këtë ngarkim?"
   ]
 }

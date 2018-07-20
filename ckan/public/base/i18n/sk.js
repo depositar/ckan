@@ -1,147 +1,157 @@
 {
   "": {
-    "domain": "ckan",
-    "lang": "sk",
+    "domain": "ckan", 
+    "lang": "sk", 
     "plural-forms": "nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;"
-  },
+  }, 
+  "Add Filter": [
+    null, 
+    "Pridať filter"
+  ], 
   "An Error Occurred": [
-    null,
+    null, 
     "Vyskytla sa chyba"
-  ],
+  ], 
   "Are you sure you want to perform this action?": [
-    null,
+    null, 
     "Chcete vykonať túto akciu?"
-  ],
+  ], 
   "Cancel": [
-    null,
+    null, 
     "Zrušiť"
-  ],
+  ], 
   "Confirm": [
-    null,
+    null, 
     "Potvrdiť"
-  ],
+  ], 
   "Edit": [
-    null,
+    null, 
     "Upraviť"
-  ],
+  ], 
   "Failed to load data API information": [
-    null,
+    null, 
     "Zlyhalo načítanie informácie o dátovom API"
-  ],
+  ], 
   "File": [
-    null,
+    null, 
     "Súbor"
-  ],
+  ], 
+  "Filters": [
+    null, 
+    "Filtre"
+  ], 
   "Follow": [
-    null,
+    null, 
     "Odoberať"
-  ],
+  ], 
+  "Graph": [
+    null, 
+    "Graf"
+  ], 
   "Hide": [
-    null,
+    null, 
     "Skryť"
-  ],
+  ], 
   "Image": [
-    null,
+    null, 
     "Obrázok"
-  ],
+  ], 
   "Input is too short, must be at least one character": [
-    null,
-    "Vstup je príliš krátky, zadajte aspoň jeden znak"
-  ],
+    "Input is too short, must be at least %(num)d characters", 
+    "", 
+    "", 
+    ""
+  ], 
   "Link": [
-    null,
+    null, 
     "Odkaz"
-  ],
+  ], 
   "Link to a URL on the internet (you can also link to an API)": [
-    null,
+    null, 
     "Odkaz URL na internete (môžete prepojiť s API)"
-  ],
+  ], 
   "Loading...": [
-    null,
+    null, 
     "Prebieha načítavanie..."
-  ],
+  ], 
+  "Map": [
+    null, 
+    "Mapa"
+  ], 
   "No matches found": [
-    null,
+    null, 
     "Žiadna zhoda"
-  ],
+  ], 
   "Please Confirm Action": [
-    null,
+    null, 
     "Prosím, potvrďte túto akciu"
-  ],
+  ], 
   "Remove": [
-    null,
+    null, 
     "Zmazať"
-  ],
-  "Reorder resource view": [
-    null,
-    "Preusporiadať náhľad dátového zdroja"
-  ],
-  "Reorder resources": [
-    null,
-    "Preusporiadať zdroje"
-  ],
+  ], 
   "Resource uploaded": [
-    null,
+    null, 
     "Zdroj nahraný"
-  ],
+  ], 
   "Save order": [
-    null,
+    null, 
     "Uložiť výber"
-  ],
+  ], 
   "Saving...": [
-    null,
+    null, 
     "Ukladám..."
-  ],
+  ], 
   "Show more": [
-    null,
+    null, 
     "Ukázať viac"
-  ],
+  ], 
   "Start typing…": [
-    null,
+    null, 
     "Začnite písať..."
-  ],
+  ], 
   "There are unsaved modifications to this form": [
-    null,
+    null, 
     "Neuložili ste vykonané zmeny vo formulári"
-  ],
+  ], 
   "There is no API data to load for this resource": [
-    null,
+    null, 
     "Neexistuje dátové API na načítanie tohto zdroja"
-  ],
+  ], 
   "URL": [
-    null,
+    null, 
     "URL"
-  ],
+  ], 
   "Unable to authenticate upload": [
-    null,
+    null, 
     "Nie je možné autentifikovať nahraté súbory"
-  ],
+  ], 
   "Unable to get data for uploaded file": [
-    null,
+    null, 
     "Nie je možné pristúpiť k nahranému súboru"
-  ],
+  ], 
   "Unable to upload file": [
-    null,
+    null, 
     "Nie je možné nahrať súbor"
-  ],
+  ], 
   "Unfollow": [
-    null,
+    null, 
     "Prestať odoberať"
-  ],
+  ], 
   "Upload": [
-    null,
+    null, 
     "Nahrávanie"
-  ],
+  ], 
   "Upload a file": [
-    null,
+    null, 
     "Nahrať súbor"
-  ],
+  ], 
   "Upload a file on your computer": [
-    null,
+    null, 
     "Odošlite súbor na váš počítať"
-  ],
+  ], 
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
-    null,
+    null, 
     "Nahrávate súbor. Chcete odísť preč a prerušiť nahrávanie?"
   ]
 }

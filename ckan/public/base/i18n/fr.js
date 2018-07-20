@@ -1,155 +1,180 @@
 {
   "": {
-    "domain": "ckan",
-    "lang": "fr",
+    "domain": "ckan", 
+    "lang": "fr", 
     "plural-forms": "nplurals=2; plural=(n > 1);"
-  },
+  }, 
+  "Add Filter": [
+    null, 
+    "Ajouter un filtre"
+  ], 
   "An Error Occurred": [
-    null,
+    null, 
     "Erreur"
-  ],
-  "An error occurred: %(text)s %(error)s": [
-    null,
-    "Une erreur est survenue: %(text)s %(error)s"
-  ],
+  ], 
   "Are you sure you want to perform this action?": [
-    null,
+    null, 
     "Etes-vous sûr de vouloir exécuter cette commande ?"
-  ],
+  ], 
   "Cancel": [
-    null,
+    null, 
     "Annuler"
-  ],
+  ], 
   "Confirm": [
-    null,
+    null, 
     "Confirmation"
-  ],
+  ], 
+  "Could not load view": [
+    null, 
+    "Impossible de charger la vue"
+  ], 
+  "DataProxy returned an error": [
+    null, 
+    "DataProxy a retourné une erreur"
+  ], 
+  "DataStore returned an error": [
+    null, 
+    "Le Magasin de Données a retourné une erreur"
+  ], 
   "Edit": [
-    null,
+    null, 
     "Éditer"
-  ],
+  ], 
   "Failed to load data API information": [
-    null,
+    null, 
     "Le chargement de l'information de l'API de données a échoué"
-  ],
+  ], 
   "File": [
-    null,
+    null, 
     "Fichier"
-  ],
+  ], 
+  "Filters": [
+    null, 
+    "Filtres"
+  ], 
   "Follow": [
-    null,
+    null, 
     "S'abonner"
-  ],
+  ], 
+  "Graph": [
+    null, 
+    "Graphe"
+  ], 
+  "Grid": [
+    null, 
+    "Grille"
+  ], 
   "Hide": [
-    null,
+    null, 
     "Cacher"
-  ],
+  ], 
   "Image": [
-    null,
+    null, 
     "Image"
-  ],
+  ], 
   "Input is too short, must be at least one character": [
-    null,
-    "L'entrée est trop courte ; elle doit avoir au moins un caractère"
-  ],
+    "Input is too short, must be at least %(num)d characters", 
+    "Saisie trop courte, au moins un caractère est nécessaire", 
+    "Saisie trop courte, au moins %(num)d caractères sont nécessaires"
+  ], 
   "Link": [
-    null,
+    null, 
     "Lien"
-  ],
+  ], 
   "Link to a URL on the internet (you can also link to an API)": [
-    null,
+    null, 
     "Lien vers une URL sur internet (vous pouvez aussi donner un lien vers une API)"
-  ],
+  ], 
   "Loading...": [
-    null,
+    null, 
     "Chargement..."
-  ],
+  ], 
+  "Map": [
+    null, 
+    "Carte"
+  ], 
   "No matches found": [
-    null,
+    null, 
     "Aucune correspondance trouvée"
-  ],
+  ], 
   "Please Confirm Action": [
-    null,
+    null, 
     "Veuillez confirmer l'action"
-  ],
+  ], 
   "Remove": [
-    null,
+    null, 
     "Supprimer"
-  ],
-  "Reorder resource view": [
-    null,
-    "Réordonner la visualisation de ressource"
-  ],
-  "Reorder resources": [
-    null,
-    "Réordonner les ressources"
-  ],
+  ], 
   "Resource uploaded": [
-    null,
+    null, 
     "Ressource  téléchargée"
-  ],
+  ], 
   "Save order": [
-    null,
+    null, 
     "Sauvegarder la commande"
-  ],
+  ], 
   "Saving...": [
-    null,
+    null, 
     "Sauvegarde en cours..."
-  ],
+  ], 
+  "Select a field": [
+    null, 
+    "Sélectionnez un champ"
+  ], 
   "Show more": [
-    null,
+    null, 
     "Montrer plus"
-  ],
+  ], 
   "Start typing…": [
-    null,
+    null, 
     "Commencez la saisie ..."
-  ],
+  ], 
   "There are unsaved modifications to this form": [
-    null,
+    null, 
     "Des modifications de ce formulaire n'ont pas été enregistrées"
-  ],
+  ], 
   "There is no API data to load for this resource": [
-    null,
+    null, 
     "Il n'y a pas de données API à télécharger pour cette ressource"
-  ],
+  ], 
   "URL": [
-    null,
+    null, 
     "URL"
-  ],
+  ], 
   "Unable to authenticate upload": [
-    null,
+    null, 
     "Échec de l'authentification du transfert"
-  ],
+  ], 
   "Unable to get data for uploaded file": [
-    null,
+    null, 
     "Impossible d'accéder aux données du fichier déposé"
-  ],
+  ], 
   "Unable to upload file": [
-    null,
+    null, 
     "Échec du transfert de fichier "
-  ],
+  ], 
   "Unfollow": [
-    null,
+    null, 
     "Se désabonner"
-  ],
+  ], 
   "Upload": [
-    null,
+    null, 
     "Envoi"
-  ],
+  ], 
   "Upload a file": [
-    null,
+    null, 
     "Envoyer un fichier depuis votre ordinateur"
-  ],
+  ], 
   "Upload a file on your computer": [
-    null,
+    null, 
     "Télécharger un fichier sur votre ordinateur"
-  ],
+  ], 
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
-    null,
+    null, 
     "Vous êtes en train de transférer un fichier. Êtes-vous sûr de vouloir naviguer ailleurs et interrompre ce transfert ?"
-  ],
+  ], 
   "error loading view": [
-    null,
+    null, 
     "erreur lors du chargement de la vue"
   ]
 }

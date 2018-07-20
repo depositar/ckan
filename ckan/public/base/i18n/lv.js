@@ -1,155 +1,161 @@
 {
   "": {
-    "domain": "ckan",
-    "lang": "lv",
+    "domain": "ckan", 
+    "lang": "lv", 
     "plural-forms": "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);"
-  },
+  }, 
+  "Add Filter": [
+    null, 
+    "Pievienot filtru"
+  ], 
   "An Error Occurred": [
-    null,
+    null, 
     "Notika kļūda"
-  ],
-  "An error occurred: %(text)s %(error)s": [
-    null,
-    "Radās kļūda: %(text)s %(error)s"
-  ],
+  ], 
   "Are you sure you want to perform this action?": [
-    null,
+    null, 
     "Vai esat pārliecināts, ka vēlaties veikt šo darbību?"
-  ],
+  ], 
   "Cancel": [
-    null,
+    null, 
     "Atcelt"
-  ],
+  ], 
   "Confirm": [
-    null,
+    null, 
     "Apstiprināt"
-  ],
+  ], 
   "Edit": [
-    null,
+    null, 
     "Rediģēt"
-  ],
+  ], 
   "Failed to load data API information": [
-    null,
+    null, 
     "Neizdevās ielādēt API datu informāciju"
-  ],
+  ], 
   "File": [
-    null,
+    null, 
     "Fails"
-  ],
+  ], 
+  "Filters": [
+    null, 
+    "Filtri"
+  ], 
   "Follow": [
-    null,
+    null, 
     "Sekot"
-  ],
+  ], 
+  "Graph": [
+    null, 
+    "Grafiks"
+  ], 
   "Hide": [
-    null,
+    null, 
     "Slēpt"
-  ],
+  ], 
   "Image": [
-    null,
+    null, 
     "Attēls"
-  ],
+  ], 
   "Input is too short, must be at least one character": [
-    null,
-    "Ievadītais teksts ir pārāk īss, jābūt vismaz vienam simbolam"
-  ],
+    "Input is too short, must be at least %(num)d characters", 
+    "", 
+    "", 
+    ""
+  ], 
   "Link": [
-    null,
+    null, 
     "Saite"
-  ],
+  ], 
   "Link to a URL on the internet (you can also link to an API)": [
-    null,
+    null, 
     "Saite uz URL internetā (jūs varat arī norādīt saiti uz API)"
-  ],
+  ], 
   "Loading...": [
-    null,
+    null, 
     "Notiek ielāde..."
-  ],
+  ], 
+  "Map": [
+    null, 
+    "Karte"
+  ], 
   "No matches found": [
-    null,
+    null, 
     "Nav atrastas sakritības"
-  ],
+  ], 
   "Please Confirm Action": [
-    null,
+    null, 
     "Lūdzu, apstipriniet darbību"
-  ],
+  ], 
   "Remove": [
-    null,
+    null, 
     "Dzēst"
-  ],
-  "Reorder resource view": [
-    null,
-    "Pārkārtot resursa skatu"
-  ],
-  "Reorder resources": [
-    null,
-    "Pārkārtot resursus"
-  ],
+  ], 
   "Resource uploaded": [
-    null,
+    null, 
     "Resurss augšupielādēts"
-  ],
+  ], 
   "Save order": [
-    null,
+    null, 
     "Saglabāt secību"
-  ],
+  ], 
   "Saving...": [
-    null,
+    null, 
     "Saglabā..."
-  ],
+  ], 
   "Show more": [
-    null,
+    null, 
     "Rādīt vairāk"
-  ],
+  ], 
   "Start typing…": [
-    null,
+    null, 
     "Sāciet rakstīt ..."
-  ],
+  ], 
   "There are unsaved modifications to this form": [
-    null,
+    null, 
     "Šajā formā ir nesaglabātas izmaiņas"
-  ],
+  ], 
   "There is no API data to load for this resource": [
-    null,
+    null, 
     "Nav API datu, lai ielādētu šo resursu"
-  ],
+  ], 
   "URL": [
-    null,
+    null, 
     "URL"
-  ],
+  ], 
   "Unable to authenticate upload": [
-    null,
+    null, 
     "Neizdevās autentificēt augšupielādi"
-  ],
+  ], 
   "Unable to get data for uploaded file": [
-    null,
+    null, 
     "Nevar iegūt datus par augšupielādēto failu"
-  ],
+  ], 
   "Unable to upload file": [
-    null,
+    null, 
     "Nevar augšupielādēt failu"
-  ],
+  ], 
   "Unfollow": [
-    null,
+    null, 
     "Atspējot sekošanu"
-  ],
+  ], 
   "Upload": [
-    null,
+    null, 
     "Augšuplādēt"
-  ],
+  ], 
   "Upload a file": [
-    null,
+    null, 
     "Augšupielādēt failu "
-  ],
+  ], 
   "Upload a file on your computer": [
-    null,
+    null, 
     "Augšupielādēt failu uz jūsu datora"
-  ],
+  ], 
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
-    null,
+    null, 
     "Jūs augšupielādējat failu. Vai tiešām vēlaties doties prom, un apturēt šo augšupielādi?"
-  ],
+  ], 
   "error loading view": [
-    null,
+    null, 
     "kļūda ielādējot skatu"
   ]
 }

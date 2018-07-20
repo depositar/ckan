@@ -1,35 +1,41 @@
 {
   "": {
-    "domain": "ckan",
-    "lang": "sr",
+    "domain": "ckan", 
+    "lang": "sr", 
     "plural-forms": "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);"
-  },
+  }, 
   "Cancel": [
-    null,
+    null, 
     "Откажи"
-  ],
+  ], 
   "Edit": [
-    null,
+    null, 
     "Уређивање"
-  ],
+  ], 
   "Image": [
-    null,
+    null, 
     "Слика"
-  ],
+  ], 
+  "Input is too short, must be at least one character": [
+    "Input is too short, must be at least %(num)d characters", 
+    "", 
+    "", 
+    ""
+  ], 
   "Loading...": [
-    null,
+    null, 
     "Учитавање ..."
-  ],
+  ], 
   "URL": [
-    null,
+    null, 
     "URL"
-  ],
+  ], 
   "Upload": [
-    null,
+    null, 
     "Допреми"
-  ],
+  ], 
   "Upload a file": [
-    null,
+    null, 
     "Допреми фајл"
   ]
 }

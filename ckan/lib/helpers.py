@@ -20,14 +20,15 @@ from urllib import urlencode
 import uuid
 
 from paste.deploy import converters
-from webhelpers.html import HTML, literal, tags
+from webhelpers.html import HTML, literal, tags, tools
 from webhelpers import paginate
 import webhelpers.text as whtext
 import webhelpers.date as date
 from markdown import markdown
 from bleach import clean as clean_html, ALLOWED_TAGS, ALLOWED_ATTRIBUTES
 from pylons import url as _pylons_default_url
-from ckan.common import config
+from ckan.common import config, is_flask_request
+from flask import redirect as _flask_redirect
 from routes import redirect_to as _routes_redirect_to
 from routes import url_for as _routes_default_url_for
 import i18n
@@ -44,10 +45,13 @@ import ckan.authz as authz
 import ckan.plugins as p
 import ckan
 
-from ckan.common import _, ungettext, g, c, request, session, json
+from ckan.common import _, ungettext, c, request, session, json
 from markupsafe import Markup, escape
 
+
 log = logging.getLogger(__name__)
+
+DEFAULT_FACET_NAMES = u'organization groups tags res_format license_id'
 
 MARKDOWN_TAGS = set([
     'del', 'dd', 'dl', 'dt', 'h1', 'h2',
@@ -177,7 +181,10 @@ def redirect_to(*args, **kw):
     if _url.startswith('/'):
         _url = str(config['ckan.site_url'].rstrip('/') + _url)
 
-    return _routes_redirect_to(_url)
+    if is_flask_request():
+        return _flask_redirect(_url)
+    else:
+        return _routes_redirect_to(_url)
 
 
 @maintain.deprecated('h.url is deprecated please use h.url_for')
@@ -561,7 +568,7 @@ def _link_to(text, *args, **kwargs):
         if kwargs.pop('inner_span', None):
             text = literal('<span>') + text + literal('</span>')
         if icon:
-            text = literal('<i class="icon-%s"></i> ' % icon) + text
+            text = literal('<i class="fa fa-%s"></i> ' % icon) + text
         return text
 
     icon = kwargs.pop('icon', None)
@@ -889,7 +896,7 @@ def sorted_extras(package_extras, auto_clean=False, subs=None, exclude=None):
 
     # If exclude is not supplied use values defined in the config
     if not exclude:
-        exclude = g.package_hide_extras
+        exclude = config.get('package_hide_extras', [])
     output = []
     for extra in sorted(package_extras, key=lambda x: x['key']):
         if extra.get('state') == 'deleted':
@@ -1704,12 +1711,15 @@ def groups_available(am_member=False):
 
 
 @core_helper
-def organizations_available(permission='edit_group'):
+def organizations_available(
+        permission='manage_group', include_dataset_count=False):
     '''Return a list of organizations that the current user has the specified
     permission for.
     '''
     context = {'user': c.user}
-    data_dict = {'permission': permission}
+    data_dict = {
+        'permission': permission,
+        'include_dataset_count': include_dataset_count}
     return logic.get_action('organization_list_for_user')(context, data_dict)
 
 
@@ -2332,9 +2342,16 @@ def license_options(existing_license_id=None):
 def get_translated(data_dict, field):
     language = i18n.get_lang()
     try:
-        return data_dict[field + '_translated'][language]
+        return data_dict[field + u'_translated'][language]
     except KeyError:
-        return data_dict.get(field, '')
+        val = data_dict.get(field, '')
+        return _(val) if val and isinstance(val, basestring) else val
+
+
+@core_helper
+def facets():
+    u'''Returns a list of the current facet names'''
+    return config.get(u'search.facets', DEFAULT_FACET_NAMES).split()
 
 
 @core_helper
@@ -2352,14 +2369,6 @@ def radio(selected, id, checked):
             value="%s" type="radio">') % (selected, id, selected, id))
     return literal(('<input id="%s_%s" name="%s" \
         value="%s" type="radio">') % (selected, id, selected, id))
-
-
-@core_helper
-def sanitize_id(id_):
-    '''Given an id (uuid4), if it has any invalid characters it raises
-    ValueError.
-    '''
-    return str(uuid.UUID(id_))
 
 
 core_helper(flash, name='flash')
@@ -2394,3 +2403,11 @@ def load_plugin_helpers():
 
     for plugin in reversed(list(p.PluginImplementations(p.ITemplateHelpers))):
         helper_functions.update(plugin.get_helpers())
+
+
+@core_helper
+def sanitize_id(id_):
+    '''Given an id (uuid4), if it has any invalid characters it raises
+    ValueError.
+    '''
+    return str(uuid.UUID(id_))

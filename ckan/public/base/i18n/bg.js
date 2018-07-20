@@ -1,143 +1,140 @@
 {
   "": {
-    "domain": "ckan",
-    "lang": "bg",
+    "domain": "ckan", 
+    "lang": "bg", 
     "plural-forms": "nplurals=2; plural=(n != 1);"
-  },
+  }, 
   "An Error Occurred": [
-    null,
+    null, 
     "Възникна грешка"
-  ],
+  ], 
   "Are you sure you want to perform this action?": [
-    null,
+    null, 
     "Сигурни ли сте, че искате да извършите това действие?"
-  ],
+  ], 
   "Cancel": [
-    null,
+    null, 
     "Отказ"
-  ],
+  ], 
   "Confirm": [
-    null,
+    null, 
     "Потвърждаване"
-  ],
+  ], 
   "Edit": [
-    null,
+    null, 
     "Редакция"
-  ],
+  ], 
   "Failed to load data API information": [
-    null,
+    null, 
     "Неуспешно зареждане на информация за API на данните"
-  ],
+  ], 
   "File": [
-    null,
+    null, 
     "Файл"
-  ],
+  ], 
   "Follow": [
-    null,
+    null, 
     "Следване"
-  ],
+  ], 
   "Hide": [
-    null,
+    null, 
     "Скриване"
-  ],
+  ], 
   "Image": [
-    null,
+    null, 
     "Изображение"
-  ],
+  ], 
   "Input is too short, must be at least one character": [
-    null,
-    "Въведената информация е твърде кратка, трябва да бъде поне един символ"
-  ],
+    "Input is too short, must be at least %(num)d characters", 
+    "", 
+    ""
+  ], 
   "Link": [
-    null,
+    null, 
     "Връзка"
-  ],
+  ], 
   "Link to a URL on the internet (you can also link to an API)": [
-    null,
+    null, 
     "Посочване на връзка към URL адрес в интернет (можете също така да посочите връзка към API)"
-  ],
+  ], 
   "Loading...": [
-    null,
+    null, 
     "Зареждане...."
-  ],
+  ], 
   "No matches found": [
-    null,
+    null, 
     "Няма намерени съвпадения"
-  ],
+  ], 
   "Please Confirm Action": [
-    null,
+    null, 
     "Моля, потвърдете действието"
-  ],
+  ], 
   "Remove": [
-    null,
+    null, 
     "Премахване"
-  ],
-  "Reorder resources": [
-    null,
-    "Подреждане на ресурси"
-  ],
+  ], 
   "Resource uploaded": [
-    null,
+    null, 
     "Ресурсът е качен"
-  ],
+  ], 
   "Save order": [
-    null,
+    null, 
     "Запазване на подредбата"
-  ],
+  ], 
   "Saving...": [
-    null,
+    null, 
     "Запазване..."
-  ],
+  ], 
   "Show more": [
-    null,
+    null, 
     "Показване на още"
-  ],
+  ], 
   "Start typing…": [
-    null,
+    null, 
     "Започнете да пишете..."
-  ],
+  ], 
   "There are unsaved modifications to this form": [
-    null,
+    null, 
     "Има незапазени промени в този формуляр"
-  ],
+  ], 
   "There is no API data to load for this resource": [
-    null,
+    null, 
     "Няма информация в API за този ресурс"
-  ],
+  ], 
   "URL": [
-    null,
+    null, 
     "URL адрес"
-  ],
+  ], 
   "Unable to authenticate upload": [
-    null,
+    null, 
     "Неуспешна проверката за автентичност на качения файл"
-  ],
+  ], 
   "Unable to get data for uploaded file": [
-    null,
+    null, 
     "Неуспешно зареждане на информацията за качения файл"
-  ],
+  ], 
   "Unable to upload file": [
-    null,
+    null, 
     "Неуспешно качване на файл"
-  ],
+  ], 
   "Unfollow": [
-    null,
+    null, 
     "Прекратяване на следването"
-  ],
+  ], 
   "Upload": [
-    null,
+    null, 
     "Качване"
-  ],
+  ], 
   "Upload a file": [
-    null,
+    null, 
     "Качване на файл"
-  ],
+  ], 
   "Upload a file on your computer": [
-    null,
+    null, 
     "Качване файл от Вашия компютър"
-  ],
+  ], 
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
-    null,
+    null, 
     "В момента качвате файл. Сигурни ли сте, че искате да излезете от страницата и да прекъснете качването?"
   ]
 }
