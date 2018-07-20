@@ -1,155 +1,160 @@
 {
   "": {
-    "domain": "ckan",
-    "lang": "it",
+    "domain": "ckan", 
+    "lang": "it", 
     "plural-forms": "nplurals=2; plural=(n != 1);"
-  },
+  }, 
+  "Add Filter": [
+    null, 
+    "Aggiungi Filtro"
+  ], 
   "An Error Occurred": [
-    null,
+    null, 
     "Si è verificato un errore"
-  ],
-  "An error occurred: %(text)s %(error)s": [
-    null,
-    "Si è verificato un errore: %(text)s %(error)s"
-  ],
+  ], 
   "Are you sure you want to perform this action?": [
-    null,
+    null, 
     "Sei certo di voler confermare questa azione?"
-  ],
+  ], 
   "Cancel": [
-    null,
+    null, 
     "Annulla"
-  ],
+  ], 
   "Confirm": [
-    null,
+    null, 
     "Conferma"
-  ],
+  ], 
   "Edit": [
-    null,
+    null, 
     "Modifica"
-  ],
+  ], 
   "Failed to load data API information": [
-    null,
+    null, 
     "Lettura dei dati attraverso le API fallita"
-  ],
+  ], 
   "File": [
-    null,
+    null, 
     "File"
-  ],
+  ], 
+  "Filters": [
+    null, 
+    "Filtri"
+  ], 
   "Follow": [
-    null,
+    null, 
     "Segui"
-  ],
+  ], 
+  "Graph": [
+    null, 
+    "Grafo"
+  ], 
   "Hide": [
-    null,
+    null, 
     "Nascondi"
-  ],
+  ], 
   "Image": [
-    null,
+    null, 
     "Immagine"
-  ],
+  ], 
   "Input is too short, must be at least one character": [
-    null,
-    "Troppo breve! Il testo deve contenere almeno un carattere"
-  ],
+    "Input is too short, must be at least %(num)d characters", 
+    "", 
+    ""
+  ], 
   "Link": [
-    null,
+    null, 
     "Link"
-  ],
+  ], 
   "Link to a URL on the internet (you can also link to an API)": [
-    null,
+    null, 
     "Link a un indirizzo internet (puoi anche inserire l'URL di un API)"
-  ],
+  ], 
   "Loading...": [
-    null,
+    null, 
     "Caricando..."
-  ],
+  ], 
+  "Map": [
+    null, 
+    "Mappa"
+  ], 
   "No matches found": [
-    null,
+    null, 
     "Elementi non trovati"
-  ],
+  ], 
   "Please Confirm Action": [
-    null,
+    null, 
     "Confermare azione"
-  ],
+  ], 
   "Remove": [
-    null,
+    null, 
     "Rimuovi"
-  ],
-  "Reorder resource view": [
-    null,
-    "Riordina vista di risorsa"
-  ],
-  "Reorder resources": [
-    null,
-    "Riordina risorse"
-  ],
+  ], 
   "Resource uploaded": [
-    null,
+    null, 
     "Risorsa caricata"
-  ],
+  ], 
   "Save order": [
-    null,
+    null, 
     "Salva ordine"
-  ],
+  ], 
   "Saving...": [
-    null,
+    null, 
     "Salvataggio in corso..."
-  ],
+  ], 
   "Show more": [
-    null,
+    null, 
     "Mostra più"
-  ],
+  ], 
   "Start typing…": [
-    null,
+    null, 
     "Inizia a scrivere..."
-  ],
+  ], 
   "There are unsaved modifications to this form": [
-    null,
+    null, 
     "Ci sono modifiche non salvate per questa form"
-  ],
+  ], 
   "There is no API data to load for this resource": [
-    null,
+    null, 
     "Non ci sono dati da caricare via API per questa risorsa "
-  ],
+  ], 
   "URL": [
-    null,
+    null, 
     "URL"
-  ],
+  ], 
   "Unable to authenticate upload": [
-    null,
+    null, 
     "Impossibile autenticare il caricamento"
-  ],
+  ], 
   "Unable to get data for uploaded file": [
-    null,
+    null, 
     "Impossibile accedere ai dati per il file caricato"
-  ],
+  ], 
   "Unable to upload file": [
-    null,
+    null, 
     "Impossibile caricare il file"
-  ],
+  ], 
   "Unfollow": [
-    null,
+    null, 
     "Non seguire più"
-  ],
+  ], 
   "Upload": [
-    null,
+    null, 
     "Carica"
-  ],
+  ], 
   "Upload a file": [
-    null,
+    null, 
     "Carica un file"
-  ],
+  ], 
   "Upload a file on your computer": [
-    null,
+    null, 
     "Carica un file dal computer"
-  ],
+  ], 
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
-    null,
+    null, 
     "Stai caricando un file. Sei sicuro che vuoi abbandonare questa pagina e interrompere il caricamento?"
-  ],
+  ], 
   "error loading view": [
-    null,
+    null, 
     "Errore nel caricamento della vista"
   ]
 }

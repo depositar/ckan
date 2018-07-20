@@ -1,111 +1,113 @@
 {
   "": {
-    "domain": "ckan",
-    "lang": "ro",
+    "domain": "ckan", 
+    "lang": "ro", 
     "plural-forms": "nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));"
-  },
+  }, 
   "An Error Occurred": [
-    null,
+    null, 
     "Eroare"
-  ],
+  ], 
   "Are you sure you want to perform this action?": [
-    null,
+    null, 
     "Sunteți sigur că doriți să efectuați această acțiune?"
-  ],
+  ], 
   "Cancel": [
-    null,
+    null, 
     "Anulare"
-  ],
+  ], 
   "Confirm": [
-    null,
+    null, 
     "Confirm"
-  ],
+  ], 
   "Edit": [
-    null,
+    null, 
     "Editează"
-  ],
+  ], 
   "Failed to load data API information": [
-    null,
+    null, 
     "Nu a reușit să se încarce datele de informații API"
-  ],
+  ], 
   "Follow": [
-    null,
+    null, 
     "Urmăriți"
-  ],
+  ], 
   "Hide": [
-    null,
+    null, 
     "Ascunde"
-  ],
+  ], 
   "Image": [
-    null,
+    null, 
     "Imagine"
-  ],
+  ], 
   "Input is too short, must be at least one character": [
-    null,
-    "Input-ul este prea scurt, ar trebuie să fie minim un caracter"
-  ],
+    "Input is too short, must be at least %(num)d characters", 
+    "", 
+    "", 
+    ""
+  ], 
   "Loading...": [
-    null,
+    null, 
     "Se încarcă..."
-  ],
+  ], 
   "No matches found": [
-    null,
+    null, 
     "Nu a fost găsit"
-  ],
+  ], 
   "Please Confirm Action": [
-    null,
+    null, 
     "Confirmați Acțiunea"
-  ],
+  ], 
   "Resource uploaded": [
-    null,
+    null, 
     "Resursă încărcată"
-  ],
+  ], 
   "Show more": [
-    null,
+    null, 
     "Mai mult"
-  ],
+  ], 
   "Start typing…": [
-    null,
+    null, 
     "Introduceți..."
-  ],
+  ], 
   "There are unsaved modifications to this form": [
-    null,
+    null, 
     "Acest formular conține modificari care nu au fost salvate"
-  ],
+  ], 
   "There is no API data to load for this resource": [
-    null,
+    null, 
     "Nu există API pentru a încărca date în aceată resursă"
-  ],
+  ], 
   "URL": [
-    null,
+    null, 
     "URL"
-  ],
+  ], 
   "Unable to authenticate upload": [
-    null,
+    null, 
     "Incapabil să autentific încărcarea"
-  ],
+  ], 
   "Unable to get data for uploaded file": [
-    null,
+    null, 
     "Incapabil să obțin date din fișierul încărcat"
-  ],
+  ], 
   "Unable to upload file": [
-    null,
+    null, 
     "Incapabil să încarc fișierul"
-  ],
+  ], 
   "Unfollow": [
-    null,
+    null, 
     "Anulați urmărirea"
-  ],
+  ], 
   "Upload": [
-    null,
+    null, 
     "Încărcare"
-  ],
+  ], 
   "Upload a file": [
-    null,
+    null, 
     "Încărcați un fișier"
-  ],
+  ], 
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
-    null,
+    null, 
     "Sunteți în proces de încărcare a fișierului. Sunteți sigur să doriți să navigați mai departe și să opriți încărcarea fișierului?"
   ]
 }

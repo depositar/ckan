@@ -1,147 +1,156 @@
 {
   "": {
-    "domain": "ckan",
-    "lang": "sv",
+    "domain": "ckan", 
+    "lang": "sv", 
     "plural-forms": "nplurals=2; plural=(n != 1);"
-  },
+  }, 
+  "Add Filter": [
+    null, 
+    "Lägg till filter"
+  ], 
   "An Error Occurred": [
-    null,
+    null, 
     "Ett fel uppstod"
-  ],
+  ], 
   "Are you sure you want to perform this action?": [
-    null,
+    null, 
     "Vill du verkligen genomföra denna åtgärd?"
-  ],
+  ], 
   "Cancel": [
-    null,
+    null, 
     "Avbryt"
-  ],
+  ], 
   "Confirm": [
-    null,
+    null, 
     "Bekräfta"
-  ],
+  ], 
   "Edit": [
-    null,
+    null, 
     "Redigera"
-  ],
+  ], 
   "Failed to load data API information": [
-    null,
+    null, 
     "Misslyckades med att ladda API-information"
-  ],
+  ], 
   "File": [
-    null,
+    null, 
     "Fil"
-  ],
+  ], 
+  "Filters": [
+    null, 
+    "Filter"
+  ], 
   "Follow": [
-    null,
+    null, 
     "Följ"
-  ],
+  ], 
+  "Graph": [
+    null, 
+    "Graf"
+  ], 
   "Hide": [
-    null,
+    null, 
     "Dölj"
-  ],
+  ], 
   "Image": [
-    null,
+    null, 
     "Bild"
-  ],
+  ], 
   "Input is too short, must be at least one character": [
-    null,
-    "För kort inmatning. Det måste vara åtminstone ett tecken"
-  ],
+    "Input is too short, must be at least %(num)d characters", 
+    "", 
+    ""
+  ], 
   "Link": [
-    null,
+    null, 
     "Länk"
-  ],
+  ], 
   "Link to a URL on the internet (you can also link to an API)": [
-    null,
+    null, 
     "Länk till en URL på internet (du kan också länka till ett API)"
-  ],
+  ], 
   "Loading...": [
-    null,
+    null, 
     "Laddar..."
-  ],
+  ], 
+  "Map": [
+    null, 
+    "Karta"
+  ], 
   "No matches found": [
-    null,
+    null, 
     "Hittades inte"
-  ],
+  ], 
   "Please Confirm Action": [
-    null,
+    null, 
     "Vänligen Bekräfta Åtgärd"
-  ],
+  ], 
   "Remove": [
-    null,
-    "Ta bort"
-  ],
-  "Reorder resource view": [
-    null,
-    "Sortera om resursvyn"
-  ],
-  "Reorder resources": [
-    null,
-    "Ändra ordning på resurser"
-  ],
+    null, 
+    "Radera"
+  ], 
   "Resource uploaded": [
-    null,
+    null, 
     "Resursen laddades upp"
-  ],
+  ], 
   "Save order": [
-    null,
+    null, 
     "Spara ordning"
-  ],
+  ], 
   "Saving...": [
-    null,
+    null, 
     "Sparar..."
-  ],
+  ], 
   "Show more": [
-    null,
+    null, 
     "Visa mer"
-  ],
+  ], 
   "Start typing…": [
-    null,
+    null, 
     "Börja skriv..."
-  ],
+  ], 
   "There are unsaved modifications to this form": [
-    null,
+    null, 
     "Det finns ändringar i detta formulär som inte sparats"
-  ],
+  ], 
   "There is no API data to load for this resource": [
-    null,
+    null, 
     "Det finns inga API-data att ladda för denna resurs"
-  ],
+  ], 
   "URL": [
-    null,
+    null, 
     "URL"
-  ],
+  ], 
   "Unable to authenticate upload": [
-    null,
+    null, 
     "Kunde inte verifiera behörighet för uppladdningen"
-  ],
+  ], 
   "Unable to get data for uploaded file": [
-    null,
+    null, 
     "Kunde inte läsa data i den uppladdade filen"
-  ],
+  ], 
   "Unable to upload file": [
-    null,
+    null, 
     "Kunde inte ladda upp filen"
-  ],
+  ], 
   "Unfollow": [
-    null,
+    null, 
     "Sluta följa"
-  ],
+  ], 
   "Upload": [
-    null,
+    null, 
     "Ladda upp"
-  ],
+  ], 
   "Upload a file": [
-    null,
+    null, 
     "Ladda upp en fil"
-  ],
+  ], 
   "Upload a file on your computer": [
-    null,
+    null, 
     "Ladda upp en fil från din dator"
-  ],
+  ], 
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
-    null,
+    null, 
     "Du laddar upp en fil. Är du säker på att du vill lämna sidan och avbryta uppladdningen?"
   ]
 }

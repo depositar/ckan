@@ -1,123 +1,158 @@
 {
   "": {
-    "domain": "ckan",
-    "lang": "ru",
+    "domain": "ckan", 
+    "lang": "ru", 
     "plural-forms": "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);"
-  },
+  }, 
+  "Add Filter": [
+    null, 
+    "Добавить фильтр"
+  ], 
   "An Error Occurred": [
-    null,
+    null, 
     "Возникла ошибка"
-  ],
+  ], 
   "Are you sure you want to perform this action?": [
-    null,
+    null, 
     "Вы уверены, что хотите выполнить это действие?"
-  ],
+  ], 
   "Cancel": [
-    null,
+    null, 
     "Отменить"
-  ],
+  ], 
   "Confirm": [
-    null,
+    null, 
     "Потверждение"
-  ],
+  ], 
+  "Could not load view": [
+    null, 
+    "Невозможно загрузить просмотр"
+  ], 
   "Edit": [
-    null,
+    null, 
     "Редактировать"
-  ],
+  ], 
   "Failed to load data API information": [
-    null,
+    null, 
     "Не удалось загрузить данные API "
-  ],
+  ], 
   "File": [
-    null,
+    null, 
     "Файл"
-  ],
+  ], 
+  "Filters": [
+    null, 
+    "Фильтры"
+  ], 
   "Follow": [
-    null,
+    null, 
     "Следить"
-  ],
+  ], 
+  "Graph": [
+    null, 
+    "График"
+  ], 
   "Hide": [
-    null,
+    null, 
     "Спрятать"
-  ],
+  ], 
   "Image": [
-    null,
+    null, 
     "Картинка"
-  ],
+  ], 
   "Input is too short, must be at least one character": [
-    null,
-    "Слишком коротко, должен быть хотя бы один символ"
-  ],
+    "Input is too short, must be at least %(num)d characters", 
+    "", 
+    "", 
+    "", 
+    ""
+  ], 
+  "Link": [
+    null, 
+    "Ссылка"
+  ], 
   "Loading...": [
-    null,
+    null, 
     "Идет загрузка..."
-  ],
+  ], 
+  "Map": [
+    null, 
+    "ка́рта"
+  ], 
   "No matches found": [
-    null,
+    null, 
     "Совпадений не найдено"
-  ],
+  ], 
   "Please Confirm Action": [
-    null,
+    null, 
     "Пожалуйста, подтвердите действие"
-  ],
+  ], 
   "Remove": [
-    null,
+    null, 
     "Удалить"
-  ],
+  ], 
   "Resource uploaded": [
-    null,
+    null, 
     "Ресурс загружен"
-  ],
+  ], 
   "Saving...": [
-    null,
+    null, 
     "Сохранение..."
-  ],
+  ], 
   "Show more": [
-    null,
+    null, 
     "Показать еще"
-  ],
+  ], 
   "Start typing…": [
-    null,
+    null, 
     "Начните вводить ..."
-  ],
+  ], 
   "There are unsaved modifications to this form": [
-    null,
+    null, 
     "Есть несохраненные изменения в этой форме"
-  ],
+  ], 
   "There is no API data to load for this resource": [
-    null,
+    null, 
     "Нет API данных для загрузки для данного ресурса"
-  ],
+  ], 
   "URL": [
-    null,
+    null, 
     "URL"
-  ],
+  ], 
   "Unable to authenticate upload": [
-    null,
+    null, 
     "Не удается загрузить аутентификации"
-  ],
+  ], 
   "Unable to get data for uploaded file": [
-    null,
+    null, 
     "Невозможно получить данные для загружаемого файла"
-  ],
+  ], 
   "Unable to upload file": [
-    null,
+    null, 
     "Невозможно загрузить файл"
-  ],
+  ], 
   "Unfollow": [
-    null,
+    null, 
     "Не следовать"
-  ],
+  ], 
   "Upload": [
-    null,
+    null, 
     "Загрузка"
-  ],
+  ], 
   "Upload a file": [
-    null,
+    null, 
     "Вложить файл"
-  ],
+  ], 
+  "Upload a file on your computer": [
+    null, 
+    "Загрузите файл с компьютера"
+  ], 
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
-    null,
+    null, 
     "Вы загружаете файл. Вы уверены что хотите прервать ?"
+  ], 
+  "error loading view": [
+    null, 
+    "Ошибка при загрузке просмотра"
   ]
 }

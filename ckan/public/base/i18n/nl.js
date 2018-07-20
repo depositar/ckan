@@ -1,147 +1,180 @@
 {
   "": {
-    "domain": "ckan",
-    "lang": "nl",
+    "domain": "ckan", 
+    "lang": "nl", 
     "plural-forms": "nplurals=2; plural=(n != 1);"
-  },
+  }, 
+  "Add Filter": [
+    null, 
+    "Filter toevoegen"
+  ], 
   "An Error Occurred": [
-    null,
+    null, 
     "Er is een fout opgetreden"
-  ],
+  ], 
   "Are you sure you want to perform this action?": [
-    null,
+    null, 
     "Weet u zeker dat u deze actie uit wil voeren?"
-  ],
+  ], 
   "Cancel": [
-    null,
+    null, 
     "Afbreken"
-  ],
+  ], 
   "Confirm": [
-    null,
+    null, 
     "Bevestig"
-  ],
+  ], 
+  "Could not load view": [
+    null, 
+    "Kon de view niet laden"
+  ], 
+  "DataProxy returned an error": [
+    null, 
+    "DataProxy gaf een fout terug"
+  ], 
+  "DataStore returned an error": [
+    null, 
+    "DataStore gaf een fout terug"
+  ], 
   "Edit": [
-    null,
+    null, 
     "Bijwerk"
-  ],
+  ], 
   "Failed to load data API information": [
-    null,
+    null, 
     "Het laden van de API informatie data is mislukt"
-  ],
+  ], 
   "File": [
-    null,
+    null, 
     "Bestand"
-  ],
+  ], 
+  "Filters": [
+    null, 
+    "Filters"
+  ], 
   "Follow": [
-    null,
+    null, 
     "Volg"
-  ],
+  ], 
+  "Graph": [
+    null, 
+    "Grafiek"
+  ], 
+  "Grid": [
+    null, 
+    "Grid"
+  ], 
   "Hide": [
-    null,
+    null, 
     "verberg"
-  ],
+  ], 
   "Image": [
-    null,
+    null, 
     "Afbeelding"
-  ],
+  ], 
   "Input is too short, must be at least one character": [
-    null,
-    "Uw input is te kort, hij moet uit minimaal een karakter bestaan"
-  ],
+    "Input is too short, must be at least %(num)d characters", 
+    "Uw input is te kort, hij moet uit minimaal een karakter bestaan ", 
+    "Uw input is te kort, hij moet uit minimaal %(num)d karakters bestaan"
+  ], 
   "Link": [
-    null,
+    null, 
     "Link"
-  ],
+  ], 
   "Link to a URL on the internet (you can also link to an API)": [
-    null,
+    null, 
     "Gebruik een weblocatie (URL). Dit mag ook de URL van een API zijn."
-  ],
+  ], 
   "Loading...": [
-    null,
+    null, 
     "Laden..."
-  ],
+  ], 
+  "Map": [
+    null, 
+    "Kaart"
+  ], 
   "No matches found": [
-    null,
+    null, 
     "Geen overeenkomsten gevonden"
-  ],
+  ], 
   "Please Confirm Action": [
-    null,
+    null, 
     "Bevestig de actie"
-  ],
+  ], 
   "Remove": [
-    null,
+    null, 
     "Verwijder"
-  ],
-  "Reorder resource view": [
-    null,
-    "Wijzig sortering bronnen"
-  ],
-  "Reorder resources": [
-    null,
-    "Wijzig sortering bronnen"
-  ],
+  ], 
   "Resource uploaded": [
-    null,
+    null, 
     "De bron is geupload"
-  ],
+  ], 
   "Save order": [
-    null,
+    null, 
     "Bewaar sortering"
-  ],
+  ], 
   "Saving...": [
-    null,
+    null, 
     "Opslaan..."
-  ],
+  ], 
+  "Select a field": [
+    null, 
+    "Kies een veld"
+  ], 
   "Show more": [
-    null,
+    null, 
     "Toon meer"
-  ],
+  ], 
   "Start typing…": [
-    null,
+    null, 
     "Begin met typen"
-  ],
+  ], 
   "There are unsaved modifications to this form": [
-    null,
+    null, 
     "Er zijn niet-opgeslagen wijzigingen in dit formulier"
-  ],
+  ], 
   "There is no API data to load for this resource": [
-    null,
+    null, 
     "Er is geen API data om deze bron te openen"
-  ],
+  ], 
   "URL": [
-    null,
+    null, 
     "URL"
-  ],
+  ], 
   "Unable to authenticate upload": [
-    null,
+    null, 
     "Kan de upload niet authenticeren"
-  ],
+  ], 
   "Unable to get data for uploaded file": [
-    null,
+    null, 
     "Kan geen data vinden voor het geuploaden bestand"
-  ],
+  ], 
   "Unable to upload file": [
-    null,
+    null, 
     "Kan het bestand niet uploaden"
-  ],
+  ], 
   "Unfollow": [
-    null,
+    null, 
     "Ontvolgen"
-  ],
+  ], 
   "Upload": [
-    null,
+    null, 
     "Upload"
-  ],
+  ], 
   "Upload a file": [
-    null,
+    null, 
     "Upload een bestand"
-  ],
+  ], 
   "Upload a file on your computer": [
-    null,
+    null, 
     "Upload een bestand"
-  ],
+  ], 
   "You are uploading a file. Are you sure you want to navigate away and stop this upload?": [
-    null,
+    null, 
     "Bestand wordt geupload. Als u deze pagina verlaat stopt de upload. Weet u zeker dat u de pagina wilt verlaten?"
+  ], 
+  "error loading view": [
+    null, 
+    "fout bij het laden van de view"
   ]
 }

@@ -1,111 +1,113 @@
 {
   "": {
-    "domain": "ckan",
-    "lang": "lt",
+    "domain": "ckan", 
+    "lang": "lt", 
     "plural-forms": "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);"
-  },
+  }, 
   "An Error Occurred": [
-    null,
+    null, 
     "Įvyko klaida"
-  ],
+  ], 
   "Are you sure you want to perform this action?": [
-    null,
+    null, 
     "Ar tikrai norite atlikti šį veiksmą?"
-  ],
+  ], 
   "Cancel": [
-    null,
+    null, 
     "Atšaukti"
-  ],
+  ], 
   "Confirm": [
-    null,
+    null, 
     "Patvirtinti"
-  ],
+  ], 
   "Edit": [
-    null,
+    null, 
     "Redaguoti"
-  ],
+  ], 
   "Failed to load data API information": [
-    null,
+    null, 
     "Nepavyko įkelti duomenų API informacijos"
-  ],
+  ], 
   "Follow": [
-    null,
+    null, 
     "Sekti"
-  ],
+  ], 
   "Hide": [
-    null,
+    null, 
     "Paslėpti"
-  ],
+  ], 
   "Image": [
-    null,
+    null, 
     "Paveikslėlis"
-  ],
+  ], 
   "Input is too short, must be at least one character": [
-    null,
-    "Įvestis yra per trumpa, turi būti mažiausiai vienas simbolis"
-  ],
+    "Input is too short, must be at least %(num)d characters", 
+    "", 
+    "", 
+    ""
+  ], 
   "Loading...": [
-    null,
+    null, 
     "Kraunama..."
-  ],
+  ], 
   "No matches found": [
-    null,
+    null, 
     "Atitikmenų nerasta"
-  ],
+  ], 
   "Please Confirm Action": [
-    null,
+    null, 
     "Prašome patvirtinti veiksmą"
-  ],
+  ], 
   "Remove": [
-    null,
+    null, 
     "Pašalinti"
-  ],
+  ], 
   "Resource uploaded": [
-    null,
+    null, 
     "Išteklius įkeltas"
-  ],
+  ], 
   "Show more": [
-    null,
+    null, 
     "Rodyti daugiau"
-  ],
+  ], 
   "Start typing…": [
-    null,
+    null, 
     "Pradėkite spausdinti..."
-  ],
+  ], 
   "There are unsaved modifications to this form": [
-    null,
+    null, 
     "Yra neišsaugotų redagacijų šioje formoje"
-  ],
+  ], 
   "There is no API data to load for this resource": [
-    null,
+    null, 
     "Šiam ištekliui nėra jokių API duomenų, kuriuos būtų galima įkelti"
-  ],
+  ], 
   "URL": [
-    null,
+    null, 
     "URL"
-  ],
+  ], 
   "Unable to authenticate upload": [
-    null,
+    null, 
     "Nepavyko nustatyti siuntinio tapatybės"
-  ],
+  ], 
   "Unable to get data for uploaded file": [
-    null,
+    null, 
     "Nepavyko gauti duomenų iš įkelto failo"
-  ],
+  ], 
   "Unable to upload file": [
-    null,
+    null, 
     "Nepavyko įkelti failo"
-  ],
+  ], 
   "Unfollow": [
-    null,
+    null, 
     "Nebesekti"
-  ],
+  ], 
   "Upload": [
-    null,
+    null, 
     "Nusiųsti"
-  ],
+  ], 
   "Upload a file": [
-    null,
+    null, 
     "Įkelti failą"
   ]
 }
