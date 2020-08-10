@@ -4,6 +4,7 @@ import datetime
 import uuid
 import logging
 
+from six import string_types
 from sqlalchemy.orm import class_mapper
 
 import ckan.lib.dictization as d
@@ -39,13 +40,15 @@ def resource_dict_save(res_dict, context):
     # dict
     new_extras = {}
     for key, value in res_dict.iteritems():
-        if isinstance(value, list):
-            continue
         if key in ('extras', 'revision_timestamp', 'tracking_summary'):
             continue
         if key in fields:
             if isinstance(getattr(obj, key), datetime.datetime):
-                if getattr(obj, key).isoformat() == value:
+                if isinstance(value, string_types):
+                    db_value = getattr(obj, key).isoformat()
+                else:
+                    db_value = getattr(obj, key)
+                if  db_value == value:
                     continue
                 if key == 'last_modified' and not new:
                     obj.url_changed = True

@@ -13,7 +13,9 @@ RUN apt-get -q -y update && apt-get -q -y upgrade && DEBIAN_FRONTEND=noninteract
 		python-dev \
         python-pip \
         python-virtualenv \
+        libffi-dev \
         libpq-dev \
+        libssl-dev \
         git-core \
 	&& apt-get -q clean
 
@@ -22,6 +24,9 @@ RUN mkdir -p $CKAN_HOME $CKAN_CONFIG $CKAN_STORAGE_PATH
 RUN virtualenv $CKAN_HOME
 RUN ln -s $CKAN_HOME/bin/pip /usr/local/bin/ckan-pip
 RUN ln -s $CKAN_HOME/bin/paster /usr/local/bin/ckan-paster
+
+# Update pip version
+RUN ckan-pip install -U pip
 
 # SetUp Requirements
 # https://github.com/ckan/ckan/pull/4197
