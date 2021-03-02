@@ -496,7 +496,7 @@ def _group_or_org_update(context, data_dict, is_org=False):
     except AttributeError:
         schema = group_plugin.form_to_db_schema()
 
-    upload = uploader.get_uploader('group', group.image_url)
+    upload = uploader.get_uploader('group')
     upload.update_data_dict(data_dict, 'image_url',
                             'image_upload', 'clear_upload')
 
@@ -659,7 +659,7 @@ def user_update(context, data_dict):
 
     '''
     model = context['model']
-    user = context['user']
+    user = author = context['user']
     session = context['session']
     schema = context.get('schema') or schema_.default_update_user_schema()
     id = _get_or_bust(data_dict, 'id')
@@ -689,7 +689,7 @@ def user_update(context, data_dict):
             }
     activity_create_context = {
         'model': model,
-        'user': user,
+        'user': author,
         'defer_commit': True,
         'ignore_auth': True,
         'session': session

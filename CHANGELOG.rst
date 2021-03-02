@@ -1,4 +1,4 @@
-.. This tocdepth stops Sphinx from putting every subsection title in this file
+qq.. This tocdepth stops Sphinx from putting every subsection title in this file
    into the master table of contents.
 
 :tocdepth: 1
@@ -6,6 +6,44 @@
 ---------
 Changelog
 ---------
+
+v.2.7.10 2021-02-10
+===================
+
+Fixes:
+
+* Fix install documentation (`#5618 <https://github.com/ckan/ckan/pull/5618>`_)
+* Fix exception when passing limit to organization (`#5789 <https://github.com/ckan/ckan/pull/5789>`_)
+* Fix for adding directories from plugins if partially string matches existing values (`#5836 <https://github.com/ckan/ckan/pull/5836>`_)
+* Fix upload log activity sorting (`#5827 <https://github.com/ckan/ckan/pull/5827>`_)
+* Textview: escape text formats (`#5814 <https://github.com/ckan/ckan/pull/5814>`_)
+* Add allow_partial_update to fix losing users (`#5734 <https://github.com/ckan/ckan/pull/5734>`_)
+* Set default group_type to group in group_create (`#5693 <https://github.com/ckan/ckan/pull/5693>`_)
+* Use user performing the action on activity context on user_update (`#5743 <https://github.com/ckan/ckan/pull/5743>`_)
+* New block in nav links in user dashboard (`#5804 <https://github.com/ckan/ckan/pull/5804>`_)
+* Update references to DataPusher documentation
+* Fix JavaScript error on Edge (`#5782 <https://github.com/ckan/ckan/pull/5782>`_)
+* Fix error when deleting resource with missing datastore table (`#5757 <https://github.com/ckan/ckan/pull/5757>`_)
+* ensure HTTP_HOST is bytes under python2 (`#5714 <https://github.com/ckan/ckan/pull/5714>`_)
+* Don't set old_filename when updating groups (`#5707 <https://github.com/ckan/ckan/pull/5707>`_)
+* Filter activities from user at the database level (`#5698 <https://github.com/ckan/ckan/pull/5698>`_)
+* Fix user_list ordering (`#5667 <https://github.com/ckan/ckan/pull/5667>`_)
+* Allow list for functions in datastore_search_sql (see :ref:`ckan.datastore.sqlsearch.allowed_functions_file`)
+
+
+v.2.7.9 2020-10-21
+==================
+
+Fixes:
+
+* Fix unflattening of dataset extras (`#5602 <https://github.com/ckan/ckan/pull/5611>`_)
+* Fix minified JS files in 2.7 (`#5557 <https://github.com/ckan/ckan/pull/5561>`_)
+* Send the right URL of CKAN to datapusher (`#5281 <https://github.com/ckan/ckan/pull/5281>`_)
+* Fix fullscreen for resource webpageview (`#5552 <https://github.com/ckan/ckan/pull/5552>`_)
+* PackageSearchIndex.index_package(): catch IndexError from date parsing (`#5535 <https://github.com/ckan/ckan/pull/5535>`_)
+* Fix collapsible menu in mobile view (`#5448 <https://github.com/ckan/ckan/pull/5448>`_)
+* Refactor query string parsing module
+
 
 v.2.7.8 2020-08-05
 ==================
