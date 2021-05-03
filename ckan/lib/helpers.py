@@ -2171,7 +2171,7 @@ def render_markdown(data: str,
     if not data:
         return ''
     if allow_html:
-        data = markdown(data.strip())
+        data = markdown(data.strip(), extensions=['markdown.extensions.sane_lists'])
     else:
         data = RE_MD_HTML_TAGS.sub('', data.strip())
         data = bleach_clean(
