@@ -7,21 +7,33 @@ qq.. This tocdepth stops Sphinx from putting every subsection title in this file
 Changelog
 ---------
 
+v.2.7.12 2021-09-22
+===================
+
+Fixes:
+
+
+* Fix tracking.js module preventing links to be opened in new tabs (`#6384 <https://github.com/ckan/ckan/pull/6384>`_)
+* Fix deleted org/group feeds (`#6367 <https://github.com/ckan/ckan/pull/6367>`_)
+* Fix runaway preview height (`#6283 <https://github.com/ckan/ckan/pull/6283>`_)
+* Fix unreliable ordering of DataStore results (`#2317 <https://github.com/ckan/ckan/pull/2317>`_)
+
+
 v.2.7.11 2021-05-19
 ===================
 
 Fixes:
 
-* Allow uploaders to only override asset / resource uploading (`#6088 <https://github.com/ckan/ckan/pull/6088`_)
-* Catch TypeError from invalid thrown by dateutils (`#6085 <https://github.com/ckan/ckan/pull/6085`_)
+* Allow uploaders to only override asset / resource uploading (`#6088 <https://github.com/ckan/ckan/pull/6088>`_)
+* Catch TypeError from invalid thrown by dateutils (`#6085 <https://github.com/ckan/ckan/pull/6085>`_)
 * Use external library to parse view filter params
-* Fix auth error when deleting a group/org (`#6006 <https://github.com/ckan/ckan/pull/6006`_)
-* Fix datastore_search language parameter (`#5974 <https://github.com/ckan/ckan/pull/5974`_)
-* make SQL function whitelist case-insensitive unless quoted (`#5969 <https://github.com/ckan/ckan/pull/5969`_)
-* Fix Explore button not working (`#3720 <https://github.com/ckan/ckan/pull/3720`_)
-* "New view" button fix (`#4260 <https://github.com/ckan/ckan/pull/4260`_)
-* remove unused var in task_status_update (`#5861 <https://github.com/ckan/ckan/pull/5861`_)
-* Prevent guessing format and mimetype from resource urls without path (`#5852 <https://github.com/ckan/ckan/pull/5852`_)
+* Fix auth error when deleting a group/org (`#6006 <https://github.com/ckan/ckan/pull/6006>`_)
+* Fix datastore_search language parameter (`#5974 <https://github.com/ckan/ckan/pull/5974>`_)
+* make SQL function whitelist case-insensitive unless quoted (`#5969 <https://github.com/ckan/ckan/pull/5969>`_)
+* Fix Explore button not working (`#3720 <https://github.com/ckan/ckan/pull/3720>`_)
+* "New view" button fix (`#4260 <https://github.com/ckan/ckan/pull/4260>`_)
+* remove unused var in task_status_update (`#5861 <https://github.com/ckan/ckan/pull/5861>`_)
+* Prevent guessing format and mimetype from resource urls without path (`#5852 <https://github.com/ckan/ckan/pull/5852>`_)
 
 
 v.2.7.10 2021-02-10
