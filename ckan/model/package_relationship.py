@@ -1,13 +1,12 @@
 # encoding: utf-8
 
-import vdm.sqlalchemy
 from sqlalchemy import orm, types, Column, Table, ForeignKey
 
-import meta
-import core
-import package as _package
-import types as _types
-import domain_object
+from ckan.model import meta
+from ckan.model import core
+from ckan.model import package as _package
+from ckan.model import types as _types
+from ckan.model import domain_object
 
 # i18n only works when this is run as part of pylons,
 # which isn't the case for paster commands.
@@ -19,7 +18,7 @@ except:
         return txt
 
 __all__ = ['PackageRelationship', 'package_relationship_table',
-           'package_relationship_revision_table']
+           ]
 
 package_relationship_table = Table('package_relationship', meta.metadata,
      Column('id', types.UnicodeText, primary_key=True, default=_types.make_uuid),
@@ -27,20 +26,18 @@ package_relationship_table = Table('package_relationship', meta.metadata,
      Column('object_package_id', types.UnicodeText, ForeignKey('package.id')),
      Column('type', types.UnicodeText),
      Column('comment', types.UnicodeText),
+     Column('state', types.UnicodeText, default=core.State.ACTIVE),
      )
 
-vdm.sqlalchemy.make_table_stateful(package_relationship_table)
-package_relationship_revision_table = core.make_revisioned_table(package_relationship_table)
 
-class PackageRelationship(vdm.sqlalchemy.RevisionedObjectMixin,
-                          vdm.sqlalchemy.StatefulObjectMixin,
+class PackageRelationship(core.StatefulObjectMixin,
                           domain_object.DomainObject):
     '''The rule with PackageRelationships is that they are stored in the model
     always as the "forward" relationship - i.e. "child_of" but never
     as "parent_of". However, the model functions provide the relationships
     from both packages in the relationship and the type is swapped from
     forward to reverse accordingly, for meaningful display to the user.'''
-    
+
     # List of (type, corresponding_reverse_type)
     # e.g. (A "depends_on" B, B has a "dependency_of" A)
     # don't forget to add specs to Solr's schema.xml
@@ -105,7 +102,7 @@ class PackageRelationship(vdm.sqlalchemy.RevisionedObjectMixin,
             raise Exception('Package %s is not in this relationship: %s' % \
                              (package, self))
         return (type_str, other_package)
-        
+
     @classmethod
     def by_subject(cls, package):
         return meta.Session.query(cls).filter(cls.subject_package_id==package.id)
@@ -113,7 +110,7 @@ class PackageRelationship(vdm.sqlalchemy.RevisionedObjectMixin,
     @classmethod
     def by_object(cls, package):
         return meta.Session.query(cls).filter(cls.object_package_id==package.id)
-    
+
     @classmethod
     def get_forward_types(cls):
         if not hasattr(cls, 'fwd_types'):
@@ -139,7 +136,7 @@ class PackageRelationship(vdm.sqlalchemy.RevisionedObjectMixin,
     def reverse_to_forward_type(cls, reverse_type):
         for fwd, rev in cls.types:
             if rev == reverse_type:
-                return fwd        
+                return fwd
 
     @classmethod
     def forward_to_reverse_type(cls, forward_type):
@@ -153,7 +150,7 @@ class PackageRelationship(vdm.sqlalchemy.RevisionedObjectMixin,
             if fwd == forward_or_reverse_type:
                 return rev
             if rev == forward_or_reverse_type:
-                return fwd        
+                return fwd
 
     @classmethod
     def make_type_printable(cls, type_):
@@ -161,7 +158,7 @@ class PackageRelationship(vdm.sqlalchemy.RevisionedObjectMixin,
             for j in range(2):
                 if type_ == types[j]:
                     return cls.types_printable[i][j]
-        raise TypeError, type_
+        raise TypeError(type_)
 
 meta.mapper(PackageRelationship, package_relationship_table, properties={
     'subject':orm.relation(_package.Package, primaryjoin=\
@@ -169,10 +166,4 @@ meta.mapper(PackageRelationship, package_relationship_table, properties={
            backref='relationships_as_subject'),
     'object':orm.relation(_package.Package, primaryjoin=package_relationship_table.c.object_package_id==_package.Package.id,
            backref='relationships_as_object'),
-    },
-    extension = [vdm.sqlalchemy.Revisioner(package_relationship_revision_table)]
-    )
-
-vdm.sqlalchemy.modify_base_object_mapper(PackageRelationship, core.Revision, core.State)
-PackageRelationshipRevision = vdm.sqlalchemy.create_object_version(
-    meta.mapper, PackageRelationship, package_relationship_revision_table)
+    })

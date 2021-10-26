@@ -2,19 +2,18 @@
 
 import datetime
 
-from sqlalchemy import orm, types, Column, Table, ForeignKey, or_, and_
-import vdm.sqlalchemy
+from sqlalchemy import orm, types, Column, Table, ForeignKey, or_, and_, text
 
-import meta
-import core
-import package as _package
-import types as _types
-import domain_object
-import user as _user
+from ckan.model import meta
+from ckan.model import core
+from ckan.model import package as _package
+from ckan.model import types as _types
+from ckan.model import domain_object
+from ckan.model import user as _user
 
 __all__ = ['group_table', 'Group',
-           'Member', 'GroupRevision', 'MemberRevision',
-           'member_revision_table', 'member_table']
+           'Member',
+           'member_table']
 
 member_table = Table('member', meta.metadata,
                      Column('id', types.UnicodeText,
@@ -27,10 +26,11 @@ member_table = Table('member', meta.metadata,
                      Column('capacity', types.UnicodeText,
                             nullable=False),
                      Column('group_id', types.UnicodeText,
-                            ForeignKey('group.id')),)
+                            ForeignKey('group.id')),
+                     Column('state', types.UnicodeText,
+                            default=core.State.ACTIVE),
+                     )
 
-vdm.sqlalchemy.make_table_stateful(member_table)
-member_revision_table = core.make_revisioned_table(member_table)
 
 group_table = Table('group', meta.metadata,
                     Column('id', types.UnicodeText,
@@ -47,14 +47,13 @@ group_table = Table('group', meta.metadata,
                            default=datetime.datetime.now),
                     Column('is_organization', types.Boolean, default=False),
                     Column('approval_status', types.UnicodeText,
-                           default=u"approved"))
+                           default=u"approved"),
+                    Column('state', types.UnicodeText,
+                           default=core.State.ACTIVE),
+                    )
 
-vdm.sqlalchemy.make_table_stateful(group_table)
-group_revision_table = core.make_revisioned_table(group_table)
 
-
-class Member(vdm.sqlalchemy.RevisionedObjectMixin,
-             vdm.sqlalchemy.StatefulObjectMixin,
+class Member(core.StatefulObjectMixin,
              domain_object.DomainObject):
     '''A Member object represents any other object being a 'member' of a
     particular Group.
@@ -111,18 +110,19 @@ class Member(vdm.sqlalchemy.RevisionedObjectMixin,
                 table_info, self.capacity, self.state)
 
 
-class Group(vdm.sqlalchemy.RevisionedObjectMixin,
-            vdm.sqlalchemy.StatefulObjectMixin,
+class Group(core.StatefulObjectMixin,
             domain_object.DomainObject):
 
     def __init__(self, name=u'', title=u'', description=u'', image_url=u'',
-                 type=u'group', approval_status=u'approved'):
+                 type=u'group', approval_status=u'approved',
+                 is_organization=False):
         self.name = name
         self.title = title
         self.description = description
         self.image_url = image_url
         self.type = type
         self.approval_status = approval_status
+        self.is_organization = is_organization
 
     @property
     def display_name(self):
@@ -198,7 +198,7 @@ class Group(vdm.sqlalchemy.RevisionedObjectMixin,
         '''
         results = meta.Session.query(Group.id, Group.name, Group.title,
                                      'parent_id').\
-            from_statement(HIERARCHY_DOWNWARDS_CTE).\
+            from_statement(text(HIERARCHY_DOWNWARDS_CTE)).\
             params(id=self.id, type=type).all()
         return results
 
@@ -221,7 +221,7 @@ class Group(vdm.sqlalchemy.RevisionedObjectMixin,
         '''Returns this group's parent, parent's parent, parent's parent's
         parent etc.. Sorted with the top level parent first.'''
         return meta.Session.query(Group).\
-            from_statement(HIERARCHY_UPWARDS_CTE).\
+            from_statement(text(HIERARCHY_UPWARDS_CTE)).\
             params(id=self.id, type=type).all()
 
     @classmethod
@@ -260,17 +260,17 @@ class Group(vdm.sqlalchemy.RevisionedObjectMixin,
             return_query=False, context=None):
         '''Return this group's active packages.
 
-        Returns all packages in this group with VDM revision state ACTIVE
+        Returns all packages in this group with VDM state ACTIVE
 
         :param with_private: if True, include the group's private packages
-        :type with_private: boolean
+        :type with_private: bool
 
         :param limit: the maximum number of packages to return
         :type limit: int
 
         :param return_query: if True, return the SQLAlchemy query object
             instead of the list of Packages resulting from the query
-        :type return_query: boolean
+        :type return_query: bool
 
         :returns: a list of this group's packages
         :rtype: list of ckan.model.package.Package objects
@@ -317,7 +317,8 @@ class Group(vdm.sqlalchemy.RevisionedObjectMixin,
             return query.all()
 
     @classmethod
-    def search_by_name_or_title(cls, text_query, group_type=None, is_org=False):
+    def search_by_name_or_title(cls, text_query, group_type=None,
+                                is_org=False, limit=20):
         text_query = text_query.strip().lower()
         q = meta.Session.query(cls) \
             .filter(or_(cls.name.contains(text_query),
@@ -329,7 +330,9 @@ class Group(vdm.sqlalchemy.RevisionedObjectMixin,
             if group_type:
                 q = q.filter(cls.type == group_type)
         q = q.filter(cls.state == 'active')
-        return q.order_by(cls.title)
+        q.order_by(cls.title)
+        q = q.limit(limit)
+        return q
 
     def add_package_by_name(self, package_name):
         if not package_name:
@@ -341,55 +344,17 @@ class Group(vdm.sqlalchemy.RevisionedObjectMixin,
                             table_name='package')
             meta.Session.add(member)
 
-    @property
-    def all_related_revisions(self):
-        '''Returns chronological list of all object revisions related to
-        this group. Ordered by most recent first.
-        '''
-        results = {}
-        from group_extra import GroupExtra
-        for grp_rev in self.all_revisions:
-            if not grp_rev.revision in results:
-                results[grp_rev.revision] = []
-            results[grp_rev.revision].append(grp_rev)
-        for class_ in [Member, GroupExtra]:
-            rev_class = class_.__revision_class__
-            obj_revisions = meta.Session.query(rev_class).\
-                filter_by(group_id=self.id).all()
-            for obj_rev in obj_revisions:
-                if not obj_rev.revision in results:
-                    results[obj_rev.revision] = []
-                results[obj_rev.revision].append(obj_rev)
-        result_list = results.items()
-        ourcmp = lambda rev_tuple1, rev_tuple2: \
-            cmp(rev_tuple2[0].timestamp, rev_tuple1[0].timestamp)
-        return sorted(result_list, cmp=ourcmp)
-
     def __repr__(self):
         return '<Group %s>' % self.name
 
-meta.mapper(Group, group_table,
-            extension=[vdm.sqlalchemy.Revisioner(group_revision_table), ], )
-
-vdm.sqlalchemy.modify_base_object_mapper(Group, core.Revision, core.State)
-GroupRevision = vdm.sqlalchemy.create_object_version(meta.mapper, Group,
-                                                     group_revision_table)
+meta.mapper(Group, group_table)
 
 meta.mapper(Member, member_table, properties={
     'group': orm.relation(Group,
                           backref=orm.backref('member_all',
                                               cascade='all, delete-orphan')),
-},
-    extension=[vdm.sqlalchemy.Revisioner(member_revision_table), ],
-)
+})
 
-
-vdm.sqlalchemy.modify_base_object_mapper(Member, core.Revision, core.State)
-MemberRevision = vdm.sqlalchemy.create_object_version(meta.mapper, Member,
-                                                      member_revision_table)
-
-#TODO
-MemberRevision.related_packages = lambda self: [self.continuity.package]
 
 # Should there arise a bug that allows loops in the group hierarchy, then it
 # will lead to infinite recursion, tieing up postgres processes at 100%, and
@@ -428,4 +393,3 @@ SELECT G.*, PT.depth FROM parenttree AS PT
     INNER JOIN public.group G ON G.id = PT.table_id
     WHERE G.type = :type AND G.state='active'
     ORDER BY PT.depth DESC;""".format(max_recurses=MAX_RECURSES)
-

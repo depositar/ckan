@@ -3,7 +3,8 @@
 import logging
 
 from ckan.common import config
-from paste.deploy.converters import asbool
+from ckan.common import asbool
+from six import text_type
 
 import ckan.lib.base as base
 import ckan.model as model
@@ -79,8 +80,7 @@ class UserController(base.BaseController):
         try:
             user_dict = get_action('user_show')(context, data_dict)
         except NotFound:
-            h.flash_error(_('Not authorized to see this page'))
-            h.redirect_to(controller='user', action='login')
+            abort(404, _('User not found'))
         except NotAuthorized:
             abort(403, _('Not authorized to see this page'))
 
@@ -146,10 +146,6 @@ class UserController(base.BaseController):
         return render('user/read.html')
 
     def me(self, locale=None):
-        if not c.user:
-            h.redirect_to(locale=locale, controller='user', action='login',
-                          id=None)
-        user_ref = c.userobj.get_reference_preferred_for_uri()
         h.redirect_to(locale=locale, controller='user', action='dashboard')
 
     def register(self, data=None, errors=None, error_summary=None):
@@ -243,7 +239,7 @@ class UserController(base.BaseController):
             user = get_action('user_create')(context, data_dict)
         except NotAuthorized:
             abort(403, _('Unauthorized to create user %s') % '')
-        except NotFound, e:
+        except NotFound as e:
             abort(404, _('User not found'))
         except DataError:
             abort(400, _(u'Integrity Error'))
@@ -251,7 +247,7 @@ class UserController(base.BaseController):
             error_msg = _(u'Bad Captcha. Please try again.')
             h.flash_error(error_msg)
             return self.new(data_dict)
-        except ValidationError, e:
+        except ValidationError as e:
             errors = e.error_dict
             error_summary = e.error_summary
             return self.new(data_dict, errors, error_summary)
@@ -315,11 +311,6 @@ class UserController(base.BaseController):
 
         user_obj = context.get('user_obj')
 
-        if not (authz.is_sysadmin(c.user)
-                or c.user == user_obj.name):
-            abort(403, _('User %s not authorized to edit %s') %
-                  (str(c.user), id))
-
         errors = errors or {}
         vars = {'data': data, 'errors': errors, 'error_summary': error_summary}
 
@@ -328,7 +319,6 @@ class UserController(base.BaseController):
                                         'user': c.user},
                                        data_dict)
 
-        c.is_myself = True
         c.show_email_notifications = asbool(
             config.get('ckan.activity_streams_email_notifications'))
         c.form = render(self.edit_user_form, extra_vars=vars)
@@ -373,11 +363,11 @@ class UserController(base.BaseController):
             h.redirect_to(controller='user', action='read', id=user['name'])
         except NotAuthorized:
             abort(403, _('Unauthorized to edit user %s') % id)
-        except NotFound, e:
+        except NotFound as e:
             abort(404, _('User not found'))
         except DataError:
             abort(400, _(u'Integrity Error'))
-        except ValidationError, e:
+        except ValidationError as e:
             errors = e.error_dict
             error_summary = e.error_summary
             return self.edit(id, data_dict, errors, error_summary)
@@ -497,7 +487,7 @@ class UserController(base.BaseController):
                          .format(user_obj.name))
                 try:
                     mailer.send_reset_link(user_obj)
-                except mailer.MailerException, e:
+                except mailer.MailerException as e:
                     h.flash_error(
                         _(u'Error sending the email. Try again later '
                           'or contact an administrator for help')
@@ -528,7 +518,7 @@ class UserController(base.BaseController):
             user_dict = get_action('user_show')(context, data_dict)
 
             user_obj = context['user_obj']
-        except NotFound, e:
+        except NotFound as e:
             abort(404, _('User not found'))
 
         c.reset_key = request.params.get('key')
@@ -539,25 +529,30 @@ class UserController(base.BaseController):
         if request.method == 'POST':
             try:
                 context['reset_password'] = True
+                user_state = user_dict['state']
                 new_password = self._get_form_password()
                 user_dict['password'] = new_password
+                username = request.params.get('name')
+                if (username is not None and username != ''):
+                    user_dict['name'] = username
                 user_dict['reset_key'] = c.reset_key
                 user_dict['state'] = model.State.ACTIVE
                 user = get_action('user_update')(context, user_dict)
                 mailer.create_reset_key(user_obj)
 
                 h.flash_success(_("Your password has been reset."))
-                h.redirect_to('/')
+                h.redirect_to(u'home.index')
             except NotAuthorized:
                 h.flash_error(_('Unauthorized to edit user %s') % id)
-            except NotFound, e:
+            except NotFound as e:
                 h.flash_error(_('User not found'))
             except DataError:
                 h.flash_error(_(u'Integrity Error'))
-            except ValidationError, e:
+            except ValidationError as e:
                 h.flash_error(u'%r' % e.error_dict)
-            except ValueError, ve:
-                h.flash_error(unicode(ve))
+            except ValueError as ve:
+                h.flash_error(text_type(ve))
+            user_dict['state'] = user_state
 
         c.user_dict = user_dict
         return render('user/perform_reset.html')
@@ -668,6 +663,11 @@ class UserController(base.BaseController):
         context = {'model': model, 'session': model.Session,
                    'user': c.user, 'auth_user_obj': c.userobj,
                    'for_view': True}
+
+        if authz.auth_is_anon_user(context):
+            h.flash_error(_('Not authorized to see this page'))
+            return h.redirect_to(controller='user', action='login')
+
         data_dict = {'id': id, 'user_obj': c.userobj, 'offset': offset}
         self._setup_template_variables(context, data_dict)
 

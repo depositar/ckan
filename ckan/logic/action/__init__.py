@@ -3,8 +3,10 @@
 from copy import deepcopy
 import re
 
+import six
+
 from ckan.logic import NotFound
-from ckan.lib.base import _, abort
+from ckan.common import _
 
 
 def rename_keys(dict_, key_map, reverse=False, destructive=False):
@@ -19,9 +21,9 @@ def rename_keys(dict_, key_map, reverse=False, destructive=False):
     for key, mapping in key_map.items():
         if reverse:
             key, mapping = (mapping, key)
-        if (not destructive) and new_dict.has_key(mapping):
+        if (not destructive) and mapping in new_dict:
             continue
-        if dict_.has_key(key):
+        if key in dict_:
             value = dict_[key]
             new_dict[mapping] = value
             del new_dict[key]
@@ -55,7 +57,7 @@ def error_summary(error_dict):
         return _(field_name.replace('_', ' '))
 
     summary = {}
-    for key, error in error_dict.iteritems():
+    for key, error in six.iteritems(error_dict):
         if key == 'resources':
             summary[_('Resources')] = _('Package resource(s) invalid')
         elif key == 'extras':

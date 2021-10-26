@@ -1,3 +1,4 @@
+
 # encoding: utf-8
 
 import collections
@@ -5,8 +6,11 @@ import datetime
 from itertools import count
 import re
 import mimetypes
+import string
 import json
-import urlparse
+
+from six import string_types, iteritems
+from six.moves.urllib.parse import urlparse
 
 import ckan.lib.navl.dictization_functions as df
 import ckan.logic as logic
@@ -26,6 +30,7 @@ StopOnError = df.StopOnError
 Missing = df.Missing
 missing = df.missing
 
+
 def owner_org_validator(key, data, errors, context):
 
     value = data.get(key)
@@ -39,19 +44,41 @@ def owner_org_validator(key, data, errors, context):
     model = context['model']
     user = context['user']
     user = model.User.get(user)
+    package = context.get('package')
+
     if value == '':
         if not authz.check_config_permission('create_unowned_dataset'):
             raise Invalid(_('An organization must be provided'))
         return
 
+    if (authz.check_config_permission('allow_dataset_collaborators')
+            and not authz.check_config_permission('allow_collaborators_to_change_owner_org')):
+
+        if package and user and not user.sysadmin:
+            is_collaborator = authz.user_is_collaborator_on_dataset(
+                user.id, package.id, ['admin', 'editor'])
+            if is_collaborator:
+                # User is a collaborator, check if it's also a member with
+                # edit rights of the current organization (redundant, but possible)
+                user_orgs = logic.get_action(
+                    'organization_list_for_user')(
+                        {'ignore_auth': True}, {'id': user.id, 'permission': 'update_dataset'})
+                user_is_org_member = package.owner_org in [org['id'] for org in user_orgs]
+                if data.get(key) != package.owner_org and not user_is_org_member:
+                    raise Invalid(_('You cannot move this dataset to another organization'))
+
     group = model.Group.get(value)
     if not group:
         raise Invalid(_('Organization does not exist'))
     group_id = group.id
-    if not context.get(u'ignore_auth', False) and not(user.sysadmin or
-           authz.has_user_permission_for_group_or_org(
-               group_id, user.name, 'create_dataset')):
-        raise Invalid(_('You cannot add a dataset to this organization'))
+
+    if not package or (package and package.owner_org != group_id):
+        # This is a new dataset or we are changing the organization
+        if not context.get(u'ignore_auth', False) and not(user.sysadmin or
+               authz.has_user_permission_for_group_or_org(
+                   group_id, user.name, 'create_dataset')):
+            raise Invalid(_('You cannot add a dataset to this organization'))
+
     data[key] = group_id
 
 
@@ -82,7 +109,7 @@ def int_validator(value, context):
     except TypeError:
         try:
             return int(value)
-        except ValueError:
+        except (TypeError, ValueError):
             pass
     else:
         if not part:
@@ -128,7 +155,7 @@ def isodate(value, context):
         return None
     try:
         date = h.date_str_to_datetime(value)
-    except (TypeError, ValueError), e:
+    except (TypeError, ValueError) as e:
         raise Invalid(_('Date format incorrect'))
     return date
 
@@ -304,7 +331,7 @@ def object_id_validator(key, activity_dict, errors, context):
 
     '''
     activity_type = activity_dict[('activity_type',)]
-    if object_id_validators.has_key(activity_type):
+    if activity_type in object_id_validators:
         object_id = activity_dict[('object_id',)]
         return object_id_validators[activity_type](object_id, context)
     else:
@@ -329,7 +356,7 @@ def name_validator(value, context):
         a valid name
 
     '''
-    if not isinstance(value, basestring):
+    if not isinstance(value, string_types):
         raise Invalid(_('Names must be strings'))
 
     # check basic textual rules
@@ -357,7 +384,7 @@ def package_name_validator(key, data, errors, context):
     else:
         package_id = data.get(key[:-1] + ('id',))
     if package_id and package_id is not missing:
-        query = query.filter(model.Package.id <> package_id)
+        query = query.filter(model.Package.id != package_id)
     result = query.first()
     if result and result.state != State.DELETED:
         errors[key].append(_('That URL is already in use.'))
@@ -406,7 +433,7 @@ def group_name_validator(key, data, errors, context):
     else:
         group_id = data.get(key[:-1] + ('id',))
     if group_id and group_id is not missing:
-        query = query.filter(model.Group.id <> group_id)
+        query = query.filter(model.Group.id != group_id)
     result = query.first()
     if result:
         errors[key].append(_('Group name already exists in database'))
@@ -443,7 +470,7 @@ def tag_string_convert(key, data, errors, context):
     and parses tag names. These are added to the data dict, enumerated. They
     are also validated.'''
 
-    if isinstance(data[key], basestring):
+    if isinstance(data[key], string_types):
         tags = [tag.strip() \
                 for tag in data[key].split(',') \
                 if tag.strip()]
@@ -499,7 +526,6 @@ def ignore_not_sysadmin(key, data, errors, context):
 
     user = context.get('user')
     ignore_auth = context.get('ignore_auth')
-
     if ignore_auth or (user and authz.is_sysadmin(user)):
         return
 
@@ -543,14 +569,13 @@ def user_name_validator(key, data, errors, context):
     model = context['model']
     new_user_name = data[key]
 
-    if not isinstance(new_user_name, basestring):
+    if not isinstance(new_user_name, string_types):
         raise Invalid(_('User names must be strings'))
 
     user = model.User.get(new_user_name)
+    user_obj_from_context = context.get('user_obj')
     if user is not None:
         # A user with new_user_name already exists in the database.
-
-        user_obj_from_context = context.get('user_obj')
         if user_obj_from_context and user_obj_from_context.id == user.id:
             # If there's a user_obj in context with the same id as the user
             # found in the db, then we must be doing a user_update and not
@@ -561,6 +586,12 @@ def user_name_validator(key, data, errors, context):
             # name, so you can create a new user with that name or update an
             # existing user's name to that name.
             errors[key].append(_('That login name is not available.'))
+    elif user_obj_from_context:
+        old_user = model.User.get(user_obj_from_context.id)
+        if old_user is not None and old_user.state != model.State.PENDING:
+            errors[key].append(_('That login name can not be modified.'))
+        else:
+            return
 
 def user_both_passwords_entered(key, data, errors, context):
 
@@ -576,12 +607,13 @@ def user_password_validator(key, data, errors, context):
 
     if isinstance(value, Missing):
         pass
-    elif not isinstance(value, basestring):
+    elif not isinstance(value, string_types):
         errors[('password',)].append(_('Passwords must be strings'))
     elif value == '':
         pass
-    elif len(value) < 4:
-        errors[('password',)].append(_('Your password must be 4 characters or longer'))
+    elif len(value) < 8:
+        errors[('password',)].append(_('Your password must be 8 characters or '
+                                       'longer'))
 
 def user_passwords_match(key, data, errors, context):
 
@@ -597,7 +629,6 @@ def user_passwords_match(key, data, errors, context):
 def user_password_not_empty(key, data, errors, context):
     '''Only check if password is present if the user is created via action API.
        If not, user_both_passwords_entered will handle the validation'''
-
     # sysadmin may provide password_hash directly for importing users
     if (data.get(('password_hash',), missing) is not missing and
             authz.is_sysadmin(context.get('user'))):
@@ -662,7 +693,7 @@ def tag_not_in_vocabulary(key, tag_dict, errors, context):
     tag_name = tag_dict[('name',)]
     if not tag_name:
         raise Invalid(_('No tag name'))
-    if tag_dict.has_key(('vocabulary_id',)):
+    if ('vocabulary_id',) in tag_dict:
         vocabulary_id = tag_dict[('vocabulary_id',)]
     else:
         vocabulary_id = None
@@ -681,16 +712,15 @@ def tag_not_in_vocabulary(key, tag_dict, errors, context):
 
 def url_validator(key, data, errors, context):
     ''' Checks that the provided value (if it is present) is a valid URL '''
-    import string
 
     url = data.get(key, None)
     if not url:
         return
 
     try:
-        pieces = urlparse.urlparse(url)
+        pieces = urlparse(url)
         if all([pieces.scheme, pieces.netloc]) and \
-           set(pieces.netloc) <= set(string.letters + string.digits + '-.') and \
+           set(pieces.netloc) <= set(string.ascii_letters + string.digits + '-.') and \
            pieces.scheme in ['http', 'https']:
            return
     except ValueError:
@@ -748,7 +778,7 @@ def list_of_strings(key, data, errors, context):
     if not isinstance(value, list):
         raise Invalid(_('Not a list'))
     for x in value:
-        if not isinstance(x, basestring):
+        if not isinstance(x, string_types):
             raise Invalid('%s: %s' % (_('Not a string'), x))
 
 def if_empty_guess_format(key, data, errors, context):
@@ -762,7 +792,7 @@ def if_empty_guess_format(key, data, errors, context):
             return
 
         # Uploaded files have only the filename as url, so check scheme to determine if it's an actual url
-        parsed = urlparse.urlparse(url)
+        parsed = urlparse(url)
         if parsed.scheme and not parsed.path:
             return
 
@@ -843,9 +873,13 @@ def empty_if_not_sysadmin(key, data, errors, context):
     empty(key, data, errors, context)
 
 #pattern from https://html.spec.whatwg.org/#e-mail-state-(type=email)
-email_pattern = re.compile(r"^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9]"\
-                       "(?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9]"\
-                       "(?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+email_pattern = re.compile(
+                            # additional pattern to reject malformed dots usage
+                            r"^(?!\.)(?!.*\.$)(?!.*?\.\.)"\
+                            "[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9]"\
+                            "(?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9]"\
+                            "(?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+                        )
 
 
 def email_validator(value, context):
@@ -856,10 +890,93 @@ def email_validator(value, context):
             raise Invalid(_('Email {email} is not a valid format').format(email=value))
     return value
 
+def collect_prefix_validate(prefix, *validator_names):
+    """
+    Return a validator that will collect top-level keys starting with
+    prefix then apply validator_names to each one. Results are moved
+    to a dict under the prefix name, with prefix removed from keys
+    """
+    validator_fns = [logic.get_validator(v) for v in validator_names]
+
+    def prefix_validator(key, data, errors, context):
+        out = {}
+        extras = data.get(('__extras',), {})
+
+        # values passed as lists of dicts will have been flattened into __junk
+        junk = df.unflatten(data.get(('__junk',), {}))
+        for field_name in junk:
+            if not field_name.startswith(prefix):
+                continue
+            extras[field_name] = junk[field_name]
+
+        for field_name in list(extras):
+            if not field_name.startswith(prefix):
+                continue
+            data[(field_name,)] = extras.pop(field_name)
+            for v in validator_fns:
+                try:
+                    df.convert(v, (field_name,), data, errors, context)
+                except df.StopOnError:
+                    break
+            out[field_name[len(prefix):]] = data.pop((field_name,))
+
+        data[(prefix,)] = out
+
+    return prefix_validator
+
+
+def dict_only(value):
+    if not isinstance(value, dict):
+        raise Invalid(_('Must be a dict'))
+    return value
+
+
+def email_is_unique(key, data, errors, context):
+    '''Validate email is unique'''
+    model = context['model']
+    session = context['session']
+
+    users = session.query(model.User) \
+        .filter(model.User.email == data[key]).all()
+    # is there is no users with this email it's free
+    if not users:
+        return
+    else:
+        # allow user to update their own email
+        for user in users:
+            if (user.name in [data[("name",)], data[("id",)]]
+                    or user.id == data[("id",)]):
+                return
+
+    raise Invalid(
+        _('The email address \'{email}\' belongs to a registered user.').format(email=data[key]))
+
+
+def one_of(list_of_value):
+    ''' Checks if the provided value is present in a list '''
+    def callable(value):
+        if value not in list_of_value:
+            raise Invalid(_('Value must be one of {}'.format(list_of_value)))
+        return value
+    return callable
+
+
+def json_object(value):
+    ''' Make sure value can be serialized as a JSON object'''
+    if value is None or value == '':
+        return
+    try:
+        if not json.dumps(value).startswith('{'):
+            raise Invalid(_('The value should be a valid JSON object'))
+    except ValueError as e:
+        raise Invalid(_('Could not parse the value as a valid JSON object'))
+
+    return value
+
 
 def extras_valid_json(extras, context):
     try:
-        for extra, value in extras.iteritems():
+        for extra, value in iteritems(extras):
             json.dumps(value)
     except ValueError as e:
         raise Invalid(_(u'Could not parse extra \'{name}\' as valid JSON').

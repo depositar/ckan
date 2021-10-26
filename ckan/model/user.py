@@ -4,50 +4,55 @@ import datetime
 import re
 import os
 from hashlib import sha1, md5
+import six
 
 import passlib.utils
 from passlib.hash import pbkdf2_sha512
 from sqlalchemy.sql.expression import or_
 from sqlalchemy.orm import synonym
 from sqlalchemy import types, Column, Table, func
-import vdm.sqlalchemy
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.ext.mutable import MutableDict
+from six import text_type
 
-import meta
-import core
-import types as _types
-import domain_object
+from ckan.model import meta
+from ckan.model import core
+from ckan.model import types as _types
+from ckan.model import domain_object
+from ckan.common import config, asbool
+
+
+def set_api_key():
+    if asbool(config.get('ckan.auth.create_default_api_keys', False)):
+        return _types.make_uuid()
+    return None
 
 
 user_table = Table('user', meta.metadata,
         Column('id', types.UnicodeText, primary_key=True,
                default=_types.make_uuid),
         Column('name', types.UnicodeText, nullable=False, unique=True),
-        Column('openid', types.UnicodeText),
         Column('password', types.UnicodeText),
         Column('fullname', types.UnicodeText),
         Column('email', types.UnicodeText),
-        Column('apikey', types.UnicodeText, default=_types.make_uuid),
+        Column('apikey', types.UnicodeText, default=set_api_key),
         Column('created', types.DateTime, default=datetime.datetime.now),
         Column('reset_key', types.UnicodeText),
         Column('about', types.UnicodeText),
         Column('activity_streams_email_notifications', types.Boolean,
             default=False),
         Column('sysadmin', types.Boolean, default=False),
+        Column('state', types.UnicodeText, default=core.State.ACTIVE),
+        Column('image_url', types.UnicodeText),
+        Column('plugin_extras', MutableDict.as_mutable(JSONB))
         )
 
-vdm.sqlalchemy.make_table_stateful(user_table)
 
-
-class User(vdm.sqlalchemy.StatefulObjectMixin,
+class User(core.StatefulObjectMixin,
            domain_object.DomainObject):
 
     VALID_NAME = re.compile(r"^[a-zA-Z0-9_\-]{3,255}$")
     DOUBLE_SLASH = re.compile(':\/([^/])')
-
-    @classmethod
-    def by_openid(cls, openid):
-        obj = meta.Session.query(cls).autoflush(False)
-        return obj.filter_by(openid=openid).first()
 
     @classmethod
     def by_email(cls, email):
@@ -81,20 +86,17 @@ class User(vdm.sqlalchemy.StatefulObjectMixin,
         e = ''
         if self.email:
             e = self.email.strip().lower().encode('utf8')
-        return md5(e).hexdigest()
+        return md5(six.ensure_binary(e)).hexdigest()
 
     def get_reference_preferred_for_uri(self):
-        '''Returns a reference (e.g. name, id, openid) for this user
+        '''Returns a reference (e.g. name, id) for this user
         suitable for the user\'s URI.
         When there is a choice, the most preferable one will be
-        given, based on readability. This is expected when repoze.who can
-        give a more friendly name for an openid user.
+        given, based on readability.
         The result is not escaped (will get done in url_for/redirect_to).
         '''
         if self.name:
             ref = self.name
-        elif self.openid:
-            ref = self.openid
         else:
             ref = self.id
         return ref
@@ -110,20 +112,20 @@ class User(vdm.sqlalchemy.StatefulObjectMixin,
         '''
         hashed_password = pbkdf2_sha512.encrypt(password)
 
-        if not isinstance(hashed_password, unicode):
-            hashed_password = hashed_password.decode('utf-8')
+        if not isinstance(hashed_password, text_type):
+            hashed_password = six.ensure_text(hashed_password)
         self._password = hashed_password
 
     def _get_password(self):
         return self._password
 
     def _verify_and_upgrade_from_sha1(self, password):
-        if isinstance(password, unicode):
-            password_8bit = password.encode('ascii', 'ignore')
-        else:
-            password_8bit = password
+        # if isinstance(password, text_type):
+        #     password_8bit = password.encode('ascii', 'ignore')
+        # else:
+        #     password_8bit = password
 
-        hashed_pass = sha1(password_8bit + self.password[:40])
+        hashed_pass = sha1(six.ensure_binary(password + self.password[:40]))
         current_hash = passlib.utils.to_native_str(self.password[40:])
 
         if passlib.utils.consteq(hashed_pass.hexdigest(), current_hash):
@@ -185,24 +187,6 @@ class User(vdm.sqlalchemy.StatefulObjectMixin,
         _dict = domain_object.DomainObject.as_dict(self)
         del _dict['password']
         return _dict
-
-    def number_of_edits(self):
-        # have to import here to avoid circular imports
-        import ckan.model as model
-
-        # Get count efficiently without spawning the SQLAlchemy subquery
-        # wrapper. Reset the VDM-forced order_by on timestamp.
-        return meta.Session.execute(
-            meta.Session.query(
-                model.Revision
-            ).filter_by(
-                author=self.name
-            ).statement.with_only_columns(
-                [func.count()]
-            ).order_by(
-                None
-            )
-        ).scalar()
 
     def number_created_packages(self, include_private_and_draft=False):
         # have to import here to avoid circular imports
@@ -282,7 +266,7 @@ class User(vdm.sqlalchemy.StatefulObjectMixin,
 
     @classmethod
     def search(cls, querystr, sqlalchemy_query=None, user_name=None):
-        '''Search name, fullname, email and openid. '''
+        '''Search name, fullname, email. '''
         if sqlalchemy_query is None:
             query = meta.Session.query(cls)
         else:
@@ -291,7 +275,6 @@ class User(vdm.sqlalchemy.StatefulObjectMixin,
         filters = [
             cls.name.ilike(qstr),
             cls.fullname.ilike(qstr),
-            cls.openid.ilike(qstr),
         ]
         # sysadmins can search on user emails
         import ckan.authz as authz

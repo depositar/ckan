@@ -9,7 +9,7 @@ from beaker.middleware import CacheMiddleware, SessionMiddleware
 from paste.cascade import Cascade
 from paste.registry import RegistryManager
 from paste.urlparser import StaticURLParser
-from paste.deploy.converters import asbool
+from ckan.common import asbool
 from paste.fileapp import _FileIter
 from pylons.middleware import ErrorHandler, StatusCodeRedirect
 from routes.middleware import RoutesMiddleware
@@ -57,8 +57,8 @@ def make_pylons_stack(conf, full_stack=True, static_files=True,
     for plugin in PluginImplementations(IMiddleware):
         app = plugin.make_middleware(app, config)
 
+    app = common_middleware.CloseWSGIInputMiddleware(app, config)
     app = common_middleware.RootPathMiddleware(app, config)
-
     # Routing/Session/Cache Middleware
     app = RoutesMiddleware(app, config['routes.map'])
     # we want to be able to retrieve the routes middleware to be able to update
@@ -75,6 +75,8 @@ def make_pylons_stack(conf, full_stack=True, static_files=True,
                                     cleanup_pylons_response_string)
 
     # Fanstatic
+    fanstatic_enable_rollup = asbool(
+        conf.get('fanstatic_enable_rollup', False))
     if asbool(config.get('debug', False)):
         fanstatic_config = {
             'versioning': True,
@@ -82,6 +84,7 @@ def make_pylons_stack(conf, full_stack=True, static_files=True,
             'minified': False,
             'bottom': True,
             'bundle': False,
+            'rollup': fanstatic_enable_rollup,
         }
     else:
         fanstatic_config = {
@@ -90,6 +93,7 @@ def make_pylons_stack(conf, full_stack=True, static_files=True,
             'minified': True,
             'bottom': True,
             'bundle': True,
+            'rollup': fanstatic_enable_rollup,
         }
     root_path = config.get('ckan.root_path', None)
     if root_path:
@@ -118,7 +122,7 @@ def make_pylons_stack(conf, full_stack=True, static_files=True,
 
     # Initialize repoze.who
     who_parser = WhoConfig(conf['here'])
-    who_parser.parse(open(app_conf['who.config_file']))
+    who_parser.parse(open(conf['who.config_file']))
 
     app = PluggableAuthenticationMiddleware(
         app,
@@ -134,9 +138,7 @@ def make_pylons_stack(conf, full_stack=True, static_files=True,
     )
 
     # Establish the Registry for this application
-    app = RegistryManager(app)
-
-    app = common_middleware.I18nMiddleware(app, config)
+    app = RegistryManager(app, streaming=False)
 
     if asbool(static_files):
         # Serve static files
@@ -154,7 +156,7 @@ def make_pylons_stack(conf, full_stack=True, static_files=True,
             path = os.path.join(storage_directory, 'storage')
             try:
                 os.makedirs(path)
-            except OSError, e:
+            except OSError as e:
                 # errno 17 is file already exists
                 if e.errno != 17:
                     raise
@@ -173,13 +175,8 @@ def make_pylons_stack(conf, full_stack=True, static_files=True,
                 )
         app = Cascade(extra_static_parsers + static_parsers)
 
-    # Page cache
-    if asbool(config.get('ckan.page_cache_enabled')):
-        app = common_middleware.PageCacheMiddleware(app, config)
-
     # Prevent the host from request to be added to the new header location.
     app = common_middleware.HostHeaderMiddleware(app)
-
     # Tracking
     if asbool(config.get('ckan.tracking_enabled', 'false')):
         app = common_middleware.TrackingMiddleware(app, config)
@@ -269,7 +266,7 @@ def execute_on_completion(application, config, callback):
     def inner(environ, start_response):
         try:
             result = application(environ, start_response)
-        except:
+        except Exception:
             callback(environ)
             raise
         # paste.fileapp converts non-file responses into list

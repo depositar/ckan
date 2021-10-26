@@ -11,6 +11,11 @@ the front-end (JavaScript). In addition, the correct functionality of the
 complete front-end (HTML, CSS, JavaScript) on all supported browsers should be
 tested manually.
 
+.. seealso::
+
+   :doc:`CKAN coding standards for tests <testing>`
+     Conventions for writing tests for CKAN
+
 --------------
 Back-end tests
 --------------
@@ -22,32 +27,25 @@ Install additional dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Some additional dependencies are needed to run the tests. Make sure you've
-created a config file at |development.ini|, then activate your
+created a config file at |ckan.ini|, then activate your
 virtual environment:
 
 .. parsed-literal::
 
     |activate|
 
-Install nose and other test-specific CKAN dependencies into your virtual
+Install pytest and other test-specific CKAN dependencies into your virtual
 environment:
-
-.. versionchanged:: 2.1
-   In CKAN 2.0 and earlier the requirements file was called
-   ``pip-requirements-test.txt``, not ``dev-requirements.txt`` as below.
 
 .. parsed-literal::
 
     pip install -r |virtualenv|/src/ckan/dev-requirements.txt
 
+.. _datastore-test-set-permissions:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 Set up the test databases
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. versionchanged:: 2.1
-   Previously |postgres| tests used the databases defined in your
-   ``development.ini`` file, instead of using their own test databases.
 
 Create test databases:
 
@@ -55,10 +53,14 @@ Create test databases:
 
     sudo -u postgres createdb -O |database_user| |test_database| -E utf-8
     sudo -u postgres createdb -O |database_user| |test_datastore| -E utf-8
-    paster datastore set-permissions -c test-core.ini | sudo -u postgres psql
 
-This database connection is specified in the ``test-core.ini`` file by the
-``sqlalchemy.url`` parameter.
+Set the permissions::
+
+    ckan -c test-core.ini datastore set-permissions | sudo -u postgres psql
+
+When the tests run they will use these databases, because in ``test-core.ini``
+they are specified in the ``sqlalchemy.url`` and ``ckan.datastore.write_url``
+connection strings.
 
 You should also make sure that the :ref:`Redis database <ckan_redis_url>`
 configured in ``test-core.ini`` is different from your production database.
@@ -71,14 +73,15 @@ Configure Solr Multi-core
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The tests assume that Solr is configured 'multi-core', whereas the default
-Solr set-up is often 'single-core'. You can ask Solr how many cores it has
-configured::
+Solr set-up is often 'single-core'. You can ask Solr for its cores status::
 
-    curl -s 'http://127.0.0.1:8983/solr/admin/cores?action=STATUS' |python -c 'import sys;import xml.dom.minidom;s=sys.stdin.read();print xml.dom.minidom.parseString(s).toprettyxml()'
+    curl -s 'http://127.0.0.1:8983/solr/admin/cores?action=STATUS' |python -c 'import sys;import xml.dom.minidom;s=sys.stdin.read();print(xml.dom.minidom.parseString(s).toprettyxml())'
 
-You can also tell from your ckan config::
+Each core will be within a child from the ``<lst name="status"`` element, and contain a ``<str name="instanceDir">`` element.
 
-    grep solr_url /etc/ckan/default/production.ini
+You can also tell from your ckan config (assuming ckan is working)::
+
+    grep solr_url |ckan.ini|
     # single-core: solr_url = http://127.0.0.1:8983/solr
     # multi-core:  solr_url = http://127.0.0.1:8983/solr/ckan
 
@@ -92,13 +95,22 @@ To enable multi-core:
 
        sudo cp -r /usr/share/solr/ /etc/solr/ckan
 
-3. Configure Solr with the new core::
+3. Find your solr.xml. It is in the Solr Home directory given by this command::
 
-       curl 'http://localhost:8983/solr/admin/cores?action=CREATE&name=ckan&instanceDir=/etc/solr/ckan'
+       curl -s 'http://127.0.0.1:8983/solr/admin/' | grep SolrHome
 
-   If successful the status should be 0 - some XML containing: ``<int name="status">0</int>``
+4. Configure Solr with the new core by editing ``solr.xml``. The 'cores' section will have one 'core' in it already and needs the second one 'ckan' added so it looks like this::
 
-4. Edit your main ckan config (e.g. |development.ini|) and adjust the solr_url to match::
+       <cores adminPath="/admin/cores" defaultCoreName="collection1">
+         <core name="collection1" instanceDir="." />
+         <core name="ckan" instanceDir="/etc/solr/ckan" />
+       </cores>
+
+5. Restart Solr by restarting Jetty (or Tomcat)::
+
+       sudo service jetty restart
+
+6. Edit your main ckan config (e.g. |ckan.ini|) and adjust the solr_url to match::
 
        solr_url = http://127.0.0.1:8983/solr/ckan
 
@@ -108,63 +120,19 @@ Run the tests
 ~~~~~~~~~~~~~
 
 To run CKAN's tests using PostgreSQL as the database, you have to give the
-``--with-pylons=test-core.ini`` option on the command line. This command will
+``--ckan-ini=test-core.ini`` option on the command line. This command will
 run the tests for CKAN core and for the core extensions::
 
-     nosetests --ckan --with-pylons=test-core.ini ckan ckanext
+     pytest --ckan-ini=test-core.ini ckan/ ckanext/
 
 The speed of the PostgreSQL tests can be improved by running PostgreSQL in
 memory and turning off durability, as described
 `in the PostgreSQL documentation <http://www.postgresql.org/docs/9.0/static/non-durability.html>`_.
 
-By default the tests will keep the database between test runs. If you wish to
-drop and reinitialize the database before the run you can use the ``reset-db``
-option::
-
-     nosetests --ckan --reset-db --with-pylons=test-core.ini ckan
-
-
-
-.. _migrationtesting:
-
-~~~~~~~~~~~~~~~~~
-Migration testing
-~~~~~~~~~~~~~~~~~
-
-If you're a CKAN developer or extension developer and your new code requires a
-change to CKAN's model, you'll need to write a migration script. To ensure that
-the migration script itself gets tested, you should run the tests with
-the ``--ckan-migration`` option, for example::
-
-     nosetests --ckan --ckan-migration --with-pylons=test-core.ini ckan ckanext
-
-By default tests are run using the model defined in ``ckan/model``.
-With the ``--ckan-migration`` option the tests will run using a database that
-has been created by running the migration scripts in ``ckan/migration``, which
-is how the database is created and upgraded in production.
-
-.. warning ::
-
-   A common error when wanting to run tests against a particular database is to
-   change ``sqlalchemy.url`` in ``test.ini`` or ``test-core.ini``. The problem
-   is that these are versioned files and people have checked in these by
-   mistake, creating problems for other developers.
 
 ~~~~~~~~~~~~~~~~~~~~~
 Common error messages
 ~~~~~~~~~~~~~~~~~~~~~
-
-ConfigError
-===========
-
-``nose.config.ConfigError: Error reading config file 'setup.cfg': no such option 'with-pylons'``
-   This error can result when you run nosetests for two reasons:
-
-   1. Pylons nose plugin failed to run. If this is the case, then within a couple of lines of running `nosetests` you'll see this warning: `Unable to load plugin pylons` followed by an error message. Fix the error here first`.
-
-   2. The Python module 'Pylons' is not installed into you Python environment. Confirm this with::
-
-        python -c "import pylons"
 
 OperationalError
 ================
@@ -172,34 +140,6 @@ OperationalError
 ``OperationalError: (OperationalError) no such function: plainto_tsquery ...``
    This error usually results from running a test which involves search functionality, which requires using a PostgreSQL database, but another (such as SQLite) is configured. The particular test is either missing a `@search_related` decorator or there is a mixup with the test configuration files leading to the wrong database being used.
 
-nosetests
-=========
-
-``nosetests: error: no such option: --ckan``
-   Nose is either unable to find ckan/ckan_nose_plugin.py in the python environment it is running in, or there is an error loading it. If there is an error, this will surface it::
-
-         nosetests --version
-
-   There are a few things to try to remedy this:
-
-   Commonly this is because the nosetests isn't running in the python environment. You need to have nose actually installed in the python environment. To see which you are running, do this::
-
-         which nosetests
-
-   If you have activated the environment and this still reports ``/usr/bin/nosetests`` then you need to::
-
-         pip install --ignore-installed nose
-
-   If ``nose --version`` still fails, ensure that ckan is installed in your environment:
-
-   .. parsed-literal::
-
-         cd |virtualenv|/src/ckan
-         python setup.py develop
-
-   One final check - the version of nose should be at least 1.0. Check with::
-
-         pip freeze | grep -i nose
 
 SolrError
 =========
@@ -221,24 +161,22 @@ JavaScript).
 Automated JavaScript tests
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The JS tests are written using the Mocha_ test framework and run via
-PhantomJS_. First you need to install the necessary packages::
+The JS tests are written using the Cypress_ test framework. First you need to install the necessary packages::
 
     sudo apt-get install npm nodejs-legacy
-    sudo npm install -g mocha-phantomjs@3.5.0 phantomjs@~1.9.1
+    sudo npm install
 
-.. _Mocha: https://mochajs.org/
-.. _PhantomJS: http://phantomjs.org//ckan
+.. _Cypress: https://www.cypress.io/
 
 To run the tests, make sure that a test server is running::
 
     . /usr/lib/ckan/default/bin/activate
-    paster serve test-core.ini
+    ckan -c |ckan.ini| run
 
 Once the test server is running switch to another terminal and execute the
 tests::
 
-    mocha-phantomjs http://localhost:5000/base/test/index.html
+    npx cypress run
 
 ~~~~~~~~~~~~
 Manual tests
@@ -249,9 +187,6 @@ following browsers:
 * Internet Explorer: 11, 10, 9 & 8
 * Firefox: Latest + previous version
 * Chrome: Latest + previous version
-
-These browsers are determined by whatever has >= 1% share with the
-latest months data from: http://data.gov.uk/data/site-usage
 
 Install browser virtual machines
 ================================
