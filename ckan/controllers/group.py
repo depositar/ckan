@@ -294,22 +294,6 @@ class GroupController(base.BaseController):
             return search_url(params)
 
         try:
-            c.fields = []
-            c.fields_grouped = {}
-            search_extras = {}
-            for (param, value) in request.params.items():
-                if param not in ['q', 'page', 'sort'] \
-                        and len(value) and not param.startswith('_'):
-                    if not param.startswith('ext_'):
-                        c.fields.append((param, value))
-                        q += ' %s: "%s"' % (param, value)
-                        if param not in c.fields_grouped:
-                            c.fields_grouped[param] = [value]
-                        else:
-                            c.fields_grouped[param].append(value)
-                    else:
-                        search_extras[param] = value
-
             facets = OrderedDict()
 
             default_facet_titles = {'organization': _('Organizations'),
@@ -328,6 +312,22 @@ class GroupController(base.BaseController):
             facets = self._update_facet_titles(facets, group_type)
 
             c.facet_titles = facets
+
+            c.fields = []
+            c.fields_grouped = {}
+            search_extras = {}
+            for (param, value) in request.params.items():
+                if param not in ['q', 'page', 'sort'] \
+                        and len(value) and not param.startswith('_'):
+                    if not param.startswith('ext_') and param in facets:
+                        c.fields.append((param, value))
+                        q += ' %s: "%s"' % (param, value)
+                        if param not in c.fields_grouped:
+                            c.fields_grouped[param] = [value]
+                        else:
+                            c.fields_grouped[param].append(value)
+                    else:
+                        search_extras[param] = value
 
             data_dict = {
                 'q': q,
