@@ -11,7 +11,8 @@ this.ckan.module('image-upload', function($) {
       field_url: 'image_url',
       field_clear: 'clear_upload',
       field_name: 'name',
-      upload_label: ''
+      upload_label: '',
+      previous_upload: false
     },
 
     /* Should be changed to true if user modifies resource's name
@@ -35,19 +36,20 @@ this.ckan.module('image-upload', function($) {
       var field_name = 'input[name="' + options.field_name + '"]';
 
       this.input = $(field_upload, this.el);
-      this.field_url = $(field_url, this.el).parents('.control-group');
-      this.field_image = this.input.parents('.control-group');
+      this.field_url = $(field_url, this.el).parents('.form-group');
+      this.field_image = this.input.parents('.form-group');
       this.field_url_input = $('input', this.field_url);
       this.field_name = this.el.parents('form').find(field_name);
       // this is the location for the upload/link data/image label
       this.label_location = $('label[for="field-image-url"]');
       // determines if the resource is a data resource
       this.is_data_resource = (this.options.field_url === 'url') && (this.options.field_upload === 'upload');
+      this.previousUpload = this.options.previous_upload;
 
       // Is there a clear checkbox on the form already?
       var checkbox = $(field_clear, this.el);
       if (checkbox.length > 0) {
-        checkbox.parents('.control-group').remove();
+        checkbox.parents('.form-group').remove();
       }
 
       // Adds the hidden clear input to the form
@@ -55,7 +57,7 @@ this.ckan.module('image-upload', function($) {
         .appendTo(this.el);
 
       // Button to set the field to be a URL
-      this.button_url = $('<a href="javascript:;" class="btn">' +
+      this.button_url = $('<a href="javascript:;" class="btn btn-default">' +
                           '<i class="fa fa-globe"></i>' +
                           this._('Link') + '</a>')
         .prop('title', this._('Link to a URL on the internet (you can also link to an API)'))
@@ -63,10 +65,15 @@ this.ckan.module('image-upload', function($) {
         .insertAfter(this.input);
 
       // Button to attach local file to the form
-      this.button_upload = $('<a href="javascript:;" class="btn">' +
+      this.button_upload = $('<a href="javascript:;" class="btn btn-default">' +
                              '<i class="fa fa-cloud-upload"></i>' +
                              this._('Upload') + '</a>')
         .insertAfter(this.input);
+
+      if (this.previousUpload) {
+        $('<div class="error-inline"><i class="fa fa-warning"></i> ' +
+          this._('Please select the file to upload again') + '</div>').appendTo(this.field_image);
+      }
 
       // Button for resetting the form when there is a URL set
       var removeText = this._('Remove');

@@ -3,10 +3,11 @@
 import functools
 import logging
 import re
-import sys
 from collections import defaultdict
 
-import formencode.validators
+from werkzeug.local import LocalProxy
+import six
+from six import string_types, text_type
 
 import ckan.model as model
 import ckan.authz as authz
@@ -34,7 +35,10 @@ class ActionError(Exception):
         super(ActionError, self).__init__(message)
 
     def __str__(self):
-        return self.message
+        msg = self.message
+        if not isinstance(msg, six.string_types):
+            msg = str(msg)
+        return six.ensure_text(msg)
 
 
 class NotFound(ActionError):
@@ -88,13 +92,13 @@ class ValidationError(ActionError):
             ''' Do some i18n stuff on the error_dict keys '''
 
             def prettify(field_name):
-                field_name = re.sub('(?<!\w)[Uu]rl(?!\w)', 'URL',
+                field_name = re.sub(r'(?<!\w)[Uu]rl(?!\w)', 'URL',
                                     field_name.replace('_', ' ').capitalize())
                 return _(field_name.replace('_', ' '))
 
             summary = {}
 
-            for key, error in error_dict.iteritems():
+            for key, error in six.iteritems(error_dict):
                 if key == 'resources':
                     summary[_('Resources')] = _('Package resource(s) invalid')
                 elif key == 'extras':
@@ -133,7 +137,13 @@ def parse_params(params, ignore_keys=None):
     for key in params:
         if ignore_keys and key in ignore_keys:
             continue
-        value = params.getall(key)
+        # flask request has `getlist` instead of pylons' `getall`
+
+        if hasattr(params, 'getall'):
+            value = params.getall(key)
+        else:
+            value = params.getlist(key)
+
         # Blank values become ''
         if not value:
             value = ''
@@ -170,7 +180,7 @@ def clean_dict(data_dict):
         if not isinstance(value, list):
             continue
         for inner_dict in value[:]:
-            if isinstance(inner_dict, basestring):
+            if isinstance(inner_dict, string_types):
                 break
             if not any(inner_dict.values()):
                 value.remove(inner_dict)
@@ -189,7 +199,7 @@ def tuplize_dict(data_dict):
     May raise a DataError if the format of the key is incorrect.
     '''
     tuplized_dict = {}
-    for key, value in data_dict.iteritems():
+    for key, value in six.iteritems(data_dict):
         key_list = key.split('__')
         for num, key in enumerate(key_list):
             if num % 2 == 1:
@@ -204,7 +214,7 @@ def tuplize_dict(data_dict):
 def untuplize_dict(tuplized_dict):
 
     data_dict = {}
-    for key, value in tuplized_dict.iteritems():
+    for key, value in six.iteritems(tuplized_dict):
         new_key = '__'.join([str(item) for item in key])
         data_dict[new_key] = value
     return data_dict
@@ -225,6 +235,9 @@ def _prepopulate_context(context):
         context.setdefault('user', c.user)
     except AttributeError:
         # c.user not set
+        pass
+    except RuntimeError:
+        # Outside of request context
         pass
     except TypeError:
         # c not registered
@@ -298,9 +311,9 @@ def check_access(action, context, data_dict=None):
         if not logic_authorization['success']:
             msg = logic_authorization.get('msg', '')
             raise NotAuthorized(msg)
-    except NotAuthorized, e:
+    except NotAuthorized as e:
         log.debug(u'check access NotAuthorized - %s user=%s "%s"',
-                  action, user, unicode(e))
+                  action, user, text_type(e))
         raise
 
     log.debug('check access OK - %s user=%s', action, user)
@@ -315,6 +328,33 @@ def clear_actions_cache():
 
 
 def chained_action(func):
+    '''Decorator function allowing action function to be chained.
+
+    This allows a plugin to modify the behaviour of an existing action
+    function. A Chained action function must be defined as
+    ``action_function(original_action, context, data_dict)`` where the
+    first parameter will be set to the action function in the next plugin
+    or in core ckan. The chained action may call the original_action
+    function, optionally passing different values, handling exceptions,
+    returning different values and/or raising different exceptions
+    to the caller.
+
+    Usage::
+
+        from ckan.plugins.toolkit import chained_action
+
+        @chained_action
+        @side_effect_free
+        def package_search(original_action, context, data_dict):
+            return original_action(context, data_dict)
+
+    :param func: chained action function
+    :type func: callable
+
+    :returns: chained action function
+    :rtype: callable
+
+    '''
     func.chained_action = True
     return func
 
@@ -388,7 +428,7 @@ def get_action(action):
         for part in module_path.split('.')[1:]:
             module = getattr(module, part)
         for k, v in module.__dict__.items():
-            if not k.startswith('_'):
+            if not k.startswith('_') and not isinstance(v, LocalProxy):
                 # Only load functions from the action module or already
                 # replaced functions.
                 if (hasattr(v, '__call__') and
@@ -407,9 +447,9 @@ def get_action(action):
     fetched_actions = {}
     chained_actions = defaultdict(list)
     for plugin in p.PluginImplementations(p.IActions):
-        for name, auth_function in plugin.get_actions().items():
-            if _is_chained_action(auth_function):
-                chained_actions[name].append(auth_function)
+        for name, action_function in plugin.get_actions().items():
+            if _is_chained_action(action_function):
+                chained_actions[name].append(action_function)
             elif name in resolved_action_plugins:
                 raise NameConflict(
                     'The action %r is already implemented in %r' % (
@@ -421,15 +461,21 @@ def get_action(action):
                 resolved_action_plugins[name] = plugin.name
                 # Extensions are exempted from the auth audit for now
                 # This needs to be resolved later
-                auth_function.auth_audit_exempt = True
-                fetched_actions[name] = auth_function
-    for name, func_list in chained_actions.iteritems():
-        if name not in fetched_actions:
+                action_function.auth_audit_exempt = True
+                fetched_actions[name] = action_function
+    for name, func_list in six.iteritems(chained_actions):
+        if name not in fetched_actions and name not in _actions:
+            # nothing to override from plugins or core
             raise NotFound('The action %r is not found for chained action' % (
                 name))
         for func in reversed(func_list):
-            prev_func = fetched_actions[name]
-            fetched_actions[name] = functools.partial(func, prev_func)
+            # try other plugins first, fall back to core
+            prev_func = fetched_actions.get(name, _actions.get(name))
+            new_func = functools.partial(func, prev_func)
+            # persisting attributes to the new partial function
+            for attribute, value in six.iteritems(func.__dict__):
+                setattr(new_func, attribute, value)
+            fetched_actions[name] = new_func
 
     # Use the updated ones in preference to the originals.
     _actions.update(fetched_actions)
@@ -511,7 +557,7 @@ def get_or_bust(data_dict, keys):
         not in the given dictionary
 
     '''
-    if isinstance(keys, basestring):
+    if isinstance(keys, string_types):
         keys = [keys]
 
     import ckan.logic.schema as schema
@@ -572,12 +618,8 @@ def side_effect_free(action):
     your action function with CKAN.)
 
     '''
-    @functools.wraps(action)
-    def wrapper(context, data_dict):
-        return action(context, data_dict)
-    wrapper.side_effect_free = True
-
-    return wrapper
+    action.side_effect_free = True
+    return action
 
 
 def auth_sysadmins_check(action):
@@ -594,20 +636,14 @@ def auth_sysadmins_check(action):
     sysadmin.
 
     '''
-    @functools.wraps(action)
-    def wrapper(context, data_dict):
-        return action(context, data_dict)
-    wrapper.auth_sysadmins_check = True
-    return wrapper
+    action.auth_sysadmins_check = True
+    return action
 
 
 def auth_audit_exempt(action):
     ''' Dirty hack to stop auth audit being done '''
-    @functools.wraps(action)
-    def wrapper(context, data_dict):
-        return action(context, data_dict)
-    wrapper.auth_audit_exempt = True
-    return wrapper
+    action.auth_audit_exempt = True
+    return action
 
 
 def auth_allow_anonymous_access(action):
@@ -618,11 +654,8 @@ def auth_allow_anonymous_access(action):
     auth function can still return False if for some reason access is not
     granted).
     '''
-    @functools.wraps(action)
-    def wrapper(context, data_dict):
-        return action(context, data_dict)
-    wrapper.auth_allow_anonymous_access = True
-    return wrapper
+    action.auth_allow_anonymous_access = True
+    return action
 
 
 def auth_disallow_anonymous_access(action):
@@ -632,11 +665,42 @@ def auth_disallow_anonymous_access(action):
     exception if an authenticated user is not provided in the context, without
     calling the actual auth function.
     '''
-    @functools.wraps(action)
-    def wrapper(context, data_dict):
-        return action(context, data_dict)
-    wrapper.auth_allow_anonymous_access = False
-    return wrapper
+    action.auth_allow_anonymous_access = False
+    return action
+
+
+def chained_auth_function(func):
+    '''
+    Decorator function allowing authentication functions to be chained.
+
+    This chain starts with the last chained auth function to be registered and
+    ends with the original auth function (or a non-chained plugin override
+    version). Chained auth functions must accept an extra parameter,
+    specifically the next auth function in the chain, for example::
+
+        auth_function(next_auth, context, data_dict).
+
+    The chained auth function may call the next_auth function, optionally
+    passing different values, handling exceptions, returning different
+    values and/or raising different exceptions to the caller.
+
+    Usage::
+
+        from ckan.plugins.toolkit import chained_auth_function
+
+        @chained_auth_function
+        @auth_allow_anonymous_access
+        def user_show(next_auth, context, data_dict=None):
+            return next_auth(context, data_dict)
+
+    :param func: chained authentication function
+    :type func: callable
+
+    :returns: chained authentication function
+    :rtype: callable
+    '''
+    func.chained_auth_function = True
+    return func
 
 
 class UnknownValidator(Exception):
@@ -674,16 +738,12 @@ def get_validator(validator):
         _validators_cache.update(validators)
         validators = _import_module_functions('ckan.logic.validators')
         _validators_cache.update(validators)
-        _validators_cache.update({'OneOf': formencode.validators.OneOf})
         converters = _import_module_functions('ckan.logic.converters')
         _validators_cache.update(converters)
+        _validators_cache.update({'OneOf': _validators_cache['one_of']})
 
-        for plugin in p.PluginImplementations(p.IValidators):
+        for plugin in reversed(list(p.PluginImplementations(p.IValidators))):
             for name, fn in plugin.get_validators().items():
-                if name in _validators_cache:
-                    raise NameConflict(
-                        'The validator %r is already defined' % (name,)
-                    )
                 log.debug('Validator function {0} from plugin {1} was inserted'
                           .format(name, plugin.name))
                 _validators_cache[name] = fn

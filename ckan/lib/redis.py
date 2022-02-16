@@ -5,10 +5,8 @@ Redis utilities.
 
 .. versionadded:: 2.7
 '''
-
 from __future__ import absolute_import
 
-import datetime
 import logging
 
 from redis import ConnectionPool, Redis
@@ -52,7 +50,7 @@ def is_redis_available():
     Check whether Redis is available.
 
     :returns: The availability of Redis.
-    :rtype: boolean
+    :rtype: bool
 
     .. seealso:: :py:func:`connect_to_redis`
     '''

@@ -1,59 +1,66 @@
-# docker build . -t ckan && docker run -d -p 80:5000 --link db:db --link redis:redis --link solr:solr ckan
-
-FROM debian:jessie
+# See CKAN docs on installation from Docker Compose on usage
+FROM debian:stretch
 MAINTAINER Open Knowledge
 
-ENV CKAN_HOME /usr/lib/ckan/default
-ENV CKAN_CONFIG /etc/ckan/default
-ENV CKAN_STORAGE_PATH /var/lib/ckan
-ENV CKAN_SITE_URL http://localhost:5000
-
-# Install required packages
-RUN apt-get -q -y update && apt-get -q -y upgrade && DEBIAN_FRONTEND=noninteractive apt-get -q -y install \
-		python-dev \
+# Install required system packages
+RUN apt-get -q -y update \
+    && DEBIAN_FRONTEND=noninteractive apt-get -q -y upgrade \
+    && apt-get -q -y install \
+        python-dev \
         python-pip \
         python-virtualenv \
-        libffi-dev \
+        python-wheel \
+        python3-dev \
+        python3-pip \
+        python3-virtualenv \
+        python3-wheel \
         libpq-dev \
+        libxml2-dev \
+        libxslt-dev \
+        libgeos-dev \
         libssl-dev \
+        libffi-dev \
+        postgresql-client \
+        build-essential \
         git-core \
-	&& apt-get -q clean
+        vim \
+        wget \
+    && apt-get -q clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# SetUp Virtual Environment CKAN
-RUN mkdir -p $CKAN_HOME $CKAN_CONFIG $CKAN_STORAGE_PATH
-RUN virtualenv $CKAN_HOME
-RUN ln -s $CKAN_HOME/bin/pip /usr/local/bin/ckan-pip
-RUN ln -s $CKAN_HOME/bin/paster /usr/local/bin/ckan-paster
+# Define environment variables
+ENV CKAN_HOME /usr/lib/ckan
+ENV CKAN_VENV $CKAN_HOME/venv
+ENV CKAN_CONFIG /etc/ckan
+ENV CKAN_STORAGE_PATH=/var/lib/ckan
 
-# Update pip version
-RUN ckan-pip install -U pip
+# Build-time variables specified by docker-compose.yml / .env
+ARG CKAN_SITE_URL
 
-# SetUp Requirements
-# https://github.com/ckan/ckan/pull/4197
-ADD ./requirement-setuptools.txt $CKAN_HOME/src/ckan/requirement-setuptools.txt
-RUN ckan-pip install --upgrade -r $CKAN_HOME/src/ckan/requirement-setuptools.txt
-ADD ./requirements.txt $CKAN_HOME/src/ckan/requirements.txt
-RUN ckan-pip install --upgrade -r $CKAN_HOME/src/ckan/requirements.txt
+# Create ckan user
+RUN useradd -r -u 900 -m -c "ckan account" -d $CKAN_HOME -s /bin/false ckan
 
-# TMP-BUGFIX https://github.com/ckan/ckan/issues/3388
-ADD ./dev-requirements.txt $CKAN_HOME/src/ckan/dev-requirements.txt
-RUN ckan-pip install --upgrade -r $CKAN_HOME/src/ckan/dev-requirements.txt
+# Setup virtual environment for CKAN
+RUN mkdir -p $CKAN_VENV $CKAN_CONFIG $CKAN_STORAGE_PATH && \
+    virtualenv $CKAN_VENV && \
+    ln -s $CKAN_VENV/bin/pip /usr/local/bin/ckan-pip &&\
+    ln -s $CKAN_VENV/bin/paster /usr/local/bin/ckan-paster &&\
+    ln -s $CKAN_VENV/bin/ckan /usr/local/bin/ckan
 
-# TMP-BUGFIX https://github.com/ckan/ckan/issues/3594
-RUN ckan-pip install --upgrade urllib3
+# Setup CKAN
+ADD . $CKAN_VENV/src/ckan/
+RUN ckan-pip install -U pip && \
+    ckan-pip install --upgrade --no-cache-dir -r $CKAN_VENV/src/ckan/requirement-setuptools.txt && \
+    ckan-pip install --upgrade --no-cache-dir -r $CKAN_VENV/src/ckan/requirements-py2.txt && \
+    ckan-pip install -e $CKAN_VENV/src/ckan/ && \
+    ln -s $CKAN_VENV/src/ckan/ckan/config/who.ini $CKAN_CONFIG/who.ini && \
+    cp -v $CKAN_VENV/src/ckan/contrib/docker/ckan-entrypoint.sh /ckan-entrypoint.sh && \
+    chmod +x /ckan-entrypoint.sh && \
+    chown -R ckan:ckan $CKAN_HOME $CKAN_VENV $CKAN_CONFIG $CKAN_STORAGE_PATH
 
-# SetUp CKAN
-ADD . $CKAN_HOME/src/ckan/
-RUN ckan-pip install -e $CKAN_HOME/src/ckan/
-RUN ln -s $CKAN_HOME/src/ckan/ckan/config/who.ini $CKAN_CONFIG/who.ini
-
-# SetUp EntryPoint
-COPY ./contrib/docker/ckan-entrypoint.sh /
-RUN chmod +x /ckan-entrypoint.sh
 ENTRYPOINT ["/ckan-entrypoint.sh"]
 
-# Volumes
-VOLUME ["/etc/ckan/default"]
-VOLUME ["/var/lib/ckan"]
+USER ckan
 EXPOSE 5000
-CMD ["ckan-paster","serve","/etc/ckan/default/ckan.ini"]
+
+CMD ["ckan","-c","/etc/ckan/production.ini", "run", "--host", "0.0.0.0"]

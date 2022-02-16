@@ -13,6 +13,17 @@ this.ckan.module('confirm-action', function (jQuery) {
        */
       content: '',
 
+      /* By default confirm-action creates a new form and submit it
+       * But you can use closest to el form by setting data-module-with-data=true
+       *
+       *     <a href="..."
+       *        data-module="confirm-action"
+       *        data-module-with-data=true>
+       *     {{ _('Save') }}
+       *     </a>
+       */
+      withData: '',
+
       /* This is part of the old i18n system and is kept for backwards-
        * compatibility for templates which set the content via the
        * `i18n.content` attribute instead of via the `content` attribute
@@ -23,15 +34,19 @@ this.ckan.module('confirm-action', function (jQuery) {
       },
 
       template: [
-        '<div class="modal">',
+        '<div class="modal fade">',
+        '<div class="modal-dialog">',
+        '<div class="modal-content">',
         '<div class="modal-header">',
         '<button type="button" class="close" data-dismiss="modal">×</button>',
-        '<h3></h3>',
+        '<h3 class="modal-title"></h3>',
         '</div>',
         '<div class="modal-body"></div>',
         '<div class="modal-footer">',
-        '<button class="btn btn-cancel"></button>',
+        '<button class="btn btn-default btn-cancel"></button>',
         '<button class="btn btn-primary"></button>',
+        '</div>',
+        '</div>',
         '</div>',
         '</div>'
       ].join('\n')
@@ -79,6 +94,12 @@ this.ckan.module('confirm-action', function (jQuery) {
         action: this.el.attr('href'),
         method: 'POST'
       });
+
+      // use parent to el form if data-module-with-data == true
+      if (this.options.withData) {
+        var form = this.el.closest('form');
+      }
+
       form.appendTo('body').submit();
     },
 
@@ -94,7 +115,7 @@ this.ckan.module('confirm-action', function (jQuery) {
         element.on('click', '.btn-cancel', this._onConfirmCancel);
         element.modal({show: false});
 
-        element.find('h3').text(this._('Please Confirm Action'));
+        element.find('.modal-title').text(this._('Please Confirm Action'));
         var content = this.options.content ||
                       this.options.i18n.content || /* Backwards-compatibility */
                       this._('Are you sure you want to perform this action?');

@@ -3,8 +3,11 @@
 import json
 import logging
 
-import paste.deploy.converters as converters
+import ckan.common as converters
 import sqlparse
+import six
+
+from six import string_types
 
 from ckan.plugins.toolkit import get_action, ObjectNotFound, NotAuthorized
 
@@ -57,10 +60,10 @@ def validate_int(i, non_negative=False):
     return i >= 0 or not non_negative
 
 
-def _strip(input):
-    if isinstance(input, basestring) and len(input) and input[0] == input[-1]:
-        return input.strip().strip('"')
-    return input
+def _strip(s):
+    if isinstance(s, string_types) and len(s) and s[0] == s[-1]:
+        return s.strip().strip('"')
+    return s
 
 
 def should_fts_index_field_type(field_type):
@@ -83,51 +86,74 @@ def get_table_and_function_names_from_sql(context, sql):
     :type sql: string
 
     :rtype: a tuple with two list of strings, one for table and one for
-    function names
+        function names
     '''
 
+    queries = [sql]
     table_names = []
     function_names = []
 
-    def _parse_query_plan(plan):
+    while queries:
+        sql = queries.pop()
 
-        table_names = []
-        function_names = []
+        function_names.extend(_get_function_names_from_sql(sql))
 
-        if plan.get('Relation Name'):
-            table_names.append(plan['Relation Name'])
-        if 'Function Name' in plan:
-            function_names.append(plan['Function Name'])
+        result = context['connection'].execute(
+            'EXPLAIN (VERBOSE, FORMAT JSON) {0}'.format(
+                six.ensure_str(sql))).fetchone()
 
-        if 'Plans' in plan:
-            for child_plan in plan['Plans']:
-                t, f = _parse_query_plan(child_plan)
-                table_names.extend(t)
-                function_names.extend(f)
-
-        return table_names, function_names
-
-    function_names.extend(_get_function_names_from_sql(sql))
-
-    result = context['connection'].execute(
-        'EXPLAIN (FORMAT JSON) {0}'.format(sql.encode('utf-8'))).fetchone()
-
-    try:
-        if isinstance(result['QUERY PLAN'], basestring):
+        try:
             query_plan = json.loads(result['QUERY PLAN'])
-        else:
-            query_plan = result['QUERY PLAN']
-        plan = query_plan[0]['Plan']
+            plan = query_plan[0]['Plan']
 
-        t, f = _parse_query_plan(plan)
+            t, q, f = _parse_query_plan(plan)
+            table_names.extend(t)
+            queries.extend(q)
 
-        table_names.extend(t)
-        function_names = list(set(function_names) | set(f))
+            function_names = list(set(function_names) | set(f))
 
-    except ValueError:
-        log.error('Could not parse query plan')
+        except ValueError:
+            log.error('Could not parse query plan')
+            raise
 
     return table_names, function_names
+
+
+def _parse_query_plan(plan):
+    '''
+    Given a Postgres Query Plan object (parsed from the output of an EXPLAIN
+    query), returns a tuple with three items:
+
+    * A list of tables involved
+    * A list of remaining queries to parse
+    * A list of function names involved
+    '''
+
+    table_names = []
+    queries = []
+    functions = []
+
+    if plan.get('Relation Name'):
+        table_names.append(plan['Relation Name'])
+    if 'Function Name' in plan:
+        if plan['Function Name'].startswith(
+                'crosstab'):
+            try:
+                queries.append(_get_subquery_from_crosstab_call(
+                    plan['Function Call']))
+            except ValueError:
+                table_names.append('_unknown_crosstab_sql')
+        else:
+            functions.append(plan['Function Name'])
+
+    if 'Plans' in plan:
+        for child_plan in plan['Plans']:
+            t, q, f = _parse_query_plan(child_plan)
+            table_names.extend(t)
+            queries.extend(q)
+            functions.extend(f)
+
+    return table_names, queries, functions
 
 
 def _get_function_names_from_sql(sql):
@@ -146,6 +172,21 @@ def _get_function_names_from_sql(sql):
     _get_function_names(parsed.tokens)
 
     return function_names
+
+
+def _get_subquery_from_crosstab_call(ct):
+    """
+    Crosstabs are a useful feature some sites choose to enable on
+    their datastore databases. To support the sql parameter passed
+    safely we accept only the simple crosstab(text) form where text
+    is a literal SQL string, otherwise raise ValueError
+    """
+    if not ct.startswith("crosstab('") or not ct.endswith("'::text)"):
+        raise ValueError('only simple crosstab calls supported')
+    ct = ct[10:-8]
+    if "'" in ct.replace("''", ""):
+        raise ValueError('only escaped single quotes allowed in query')
+    return ct.replace("''", "'")
 
 
 def datastore_dictionary(resource_id):

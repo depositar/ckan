@@ -8,8 +8,7 @@ import ckan.lib.app_globals as app_globals
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.model as model
 import ckan.logic as logic
-import ckan.plugins as plugins
-from home import CACHE_PARAMETERS
+from ckan.controllers.home import CACHE_PARAMETERS
 
 
 c = base.c
@@ -100,7 +99,7 @@ class AdminController(base.BaseController):
 
                 data = logic.get_action('config_option_update')(
                     {'user': c.user}, data_dict)
-            except logic.ValidationError, e:
+            except logic.ValidationError as e:
                 errors = e.error_dict
                 error_summary = e.error_summary
                 vars = {'data': data, 'errors': errors,
@@ -179,7 +178,7 @@ class AdminController(base.BaseController):
                         # page Ensure that whatever 'head' pointer is used
                         # gets moved down to the next revision
                         model.repo.purge_revision(revision, leave_record=False)
-                    except Exception, inst:
+                    except Exception as inst:
                         msg = _('Problem purging revision %s: %s') % (id, inst)
                         msgs.append(msg)
                 h.flash_success(_('Purge complete'))

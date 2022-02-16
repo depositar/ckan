@@ -8,8 +8,10 @@
 import os.path
 import re
 
+from six import text_type
+
 from ckan import model
-from ckan.lib.io import decode_path
+from ckan.lib.io_ import decode_path
 
 # Maximum length of a filename's extension (including the '.')
 MAX_FILENAME_EXTENSION_LENGTH = 21
@@ -24,7 +26,7 @@ MIN_FILENAME_TOTAL_LENGTH = 3
 def munge_name(name):
     '''Munges the package name field in case it is not to spec.'''
     # substitute non-ascii characters
-    if isinstance(name, unicode):
+    if isinstance(name, text_type):
         name = substitute_ascii_equivalents(name)
     # separators become dashes
     name = re.sub('[ .:/]', '-', name)
@@ -39,7 +41,7 @@ def munge_name(name):
 def munge_title_to_name(name):
     '''Munge a package title into a package name.'''
     # substitute non-ascii characters
-    if isinstance(name, unicode):
+    if isinstance(name, text_type):
         name = substitute_ascii_equivalents(name)
     # convert spaces and separators
     name = re.sub('[ .:/]', '-', name)
@@ -54,10 +56,10 @@ def munge_title_to_name(name):
     # (make length less than max, in case we need a few for '_' chars
     # to de-clash names.)
     if len(name) > max_length:
-        year_match = re.match('.*?[_-]((?:\d{2,4}[-/])?\d{2,4})$', name)
+        year_match = re.match(r'.*?[_-]((?:\d{2,4}[-/])?\d{2,4})$', name)
         if year_match:
             year = year_match.groups()[0]
-            name = '%s-%s' % (name[:(max_length-len(year)-1)], year)
+            name = '%s-%s' % (name[:(max_length - len(year) - 1)], year)
         else:
             name = name[:max_length]
     name = _munge_to_length(name, model.PACKAGE_NAME_MIN_LENGTH,
@@ -147,7 +149,7 @@ def munge_filename(filename):
 
     Returns a Unicode string.
     '''
-    if not isinstance(filename, unicode):
+    if not isinstance(filename, text_type):
         filename = decode_path(filename)
 
     # Ignore path

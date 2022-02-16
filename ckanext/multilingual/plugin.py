@@ -1,11 +1,19 @@
 # encoding: utf-8
 
+import six
+from six import string_types
+
 import ckan
 from ckan.plugins import SingletonPlugin, implements, IPackageController
 from ckan.plugins import IGroupController, IOrganizationController, ITagController, IResourceController
 
 from ckan.common import request, config, c
 from ckan.logic import get_action
+
+try:
+    long        # Python 2
+except NameError:
+    long = int  # Python 3
 
 
 def translate_data_dict(data_dict):
@@ -26,7 +34,7 @@ def translate_data_dict(data_dict):
     for (key, value) in flattened.items():
         if value in (None, True, False):
             continue
-        elif isinstance(value, basestring):
+        elif isinstance(value, string_types):
             terms.add(value)
         elif isinstance(value, (int, long)):
             continue
@@ -74,7 +82,7 @@ def translate_data_dict(data_dict):
             # Don't try to translate values that aren't strings.
             translated_flattened[key] = value
 
-        elif isinstance(value, basestring):
+        elif isinstance(value, string_types):
             if value in desired_translations:
                 translated_flattened[key] = desired_translations[value]
             else:
@@ -108,6 +116,7 @@ def translate_resource_data_dict(data_dict):
     as possible translated into the desired or the fallback language.
 
     '''
+
     desired_lang_code = request.environ['CKAN_LANG']
     fallback_lang_code = config.get('ckan.locale_default', 'en')
 
@@ -117,11 +126,11 @@ def translate_resource_data_dict(data_dict):
 
     # Get a simple flat list of all the terms to be translated, from the
     # flattened data dict.
-    terms = sets.Set()
+    terms = set()
     for (key, value) in flattened.items():
         if value in (None, True, False):
             continue
-        elif isinstance(value, basestring):
+        elif isinstance(value, string_types):
             terms.add(value)
         elif isinstance(value, (int, long)):
             continue
@@ -164,7 +173,7 @@ def translate_resource_data_dict(data_dict):
             # Don't try to translate values that aren't strings.
             translated_flattened[key] = value
 
-        elif isinstance(value, basestring):
+        elif isinstance(value, string_types):
             if value in desired_translations:
                 translated_flattened[key] = desired_translations[value]
             else:
@@ -217,13 +226,13 @@ class MultilingualDataset(SingletonPlugin):
 
         ## translate rest
         all_terms = []
-        for key, value in search_data.iteritems():
+        for key, value in sorted(six.iteritems(search_data)):
             if key in KEYS_TO_IGNORE or key.startswith('title'):
                 continue
             if not isinstance(value, list):
                 value = [value]
             for item in value:
-                if isinstance(item, basestring):
+                if isinstance(item, string_types):
                     all_terms.append(item)
 
         field_translations = get_action('term_translation_show')(
@@ -235,11 +244,11 @@ class MultilingualDataset(SingletonPlugin):
 
         text_field_items['text_' + default_lang].extend(all_terms)
 
-        for translation in sorted(field_translations):
+        for translation in sorted(field_translations, key=lambda tr: all_terms.index(tr['term'])):
             lang_field = 'text_' + translation['lang_code']
             text_field_items[lang_field].append(translation['term_translation'])
 
-        for key, value in text_field_items.iteritems():
+        for key, value in six.iteritems(text_field_items):
             search_data[key] = ' '.join(value)
 
         return search_data
@@ -257,6 +266,8 @@ class MultilingualDataset(SingletonPlugin):
                 current_lang = config.get('ckan.locale_default')
             else:
                 raise
+        except KeyError:
+            current_lang = config.get('ckan.locale_default')
 
         # fallback to default locale if locale not in suported langs
         if not current_lang in lang_set:
