@@ -1,6 +1,6 @@
 {% extends "user/dashboard.html" %}
 
-{% set group_type = h.default_group_type('organization') %}
+{% set org_type = h.default_group_type('organization') %}
 
 {% block page_primary_action %}
   {% if h.check_access('organization_create') %}
