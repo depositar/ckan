@@ -279,18 +279,6 @@ def _read(id: Optional[str], limit: int, group_type: str) -> dict[str, Any]:
         params.append((u'page', page))
         return search_url(params)
 
-    details = _get_search_details()
-    extra_vars[u'fields'] = details[u'fields']
-    extra_vars[u'fields_grouped'] = details[u'fields_grouped']
-    fq += details[u'fq']
-    search_extras = details[u'search_extras']
-
-    # TODO: Remove
-    # ckan 2.9: Adding variables that were removed from c object for
-    # compatibility with templates in existing extensions
-    g.fields = extra_vars[u'fields']
-    g.fields_grouped = extra_vars[u'fields_grouped']
-
     facets: "OrderedDict[str, str]" = OrderedDict()
 
     org_label = h.humanize_entity_type(
@@ -319,6 +307,17 @@ def _read(id: Optional[str], limit: int, group_type: str) -> dict[str, Any]:
 
     # Facet titles
     facets = _update_facet_titles(facets, group_type)
+
+    details = _get_search_details(facets)
+    extra_vars[u'fields'] = details[u'fields']
+    extra_vars[u'fields_grouped'] = details[u'fields_grouped']
+    fq += details[u'fq']
+    search_extras = details[u'search_extras']
+
+    # TODO: Remove
+    # ckan 2.9: Adding variables that were removed from c object for
+    # compatibility with templates in existing extensions
+    g.fields = extra_vars[u'fields']
 
     extra_vars["facet_titles"] = facets
 
