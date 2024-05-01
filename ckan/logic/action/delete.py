@@ -179,8 +179,7 @@ def resource_delete(context: Context, data_dict: DataDict) -> ActionResult.Resou
 
     package_id = entity.get_package_id()
 
-    package_show_context = dict(context, for_update=True)
-    pkg_dict = _get_action('package_show')(package_show_context, {'id': package_id})
+    pkg_dict = _get_action('package_show')(context, {'id': package_id})
 
     for plugin in plugins.PluginImplementations(plugins.IResourceController):
         plugin.before_resource_delete(context, data_dict,
