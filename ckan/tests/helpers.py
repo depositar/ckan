@@ -241,9 +241,6 @@ class CKANTestClient(FlaskClient):
         if args and isinstance(args[0], str):
             kwargs.setdefault("follow_redirects", True)
             kwargs.setdefault("base_url", config["ckan.site_url"])
-            kwargs.setdefault("environ_overrides", {})
-            kwargs["environ_overrides"]["CKAN_TESTING"] = True
-
         res = super(CKANTestClient, self).open(*args, **kwargs)
 
         if status:
