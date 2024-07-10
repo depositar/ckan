@@ -88,7 +88,7 @@ class User(core.StatefulObjectMixin,
 
     @classmethod
     def by_email(cls, email: str) -> Optional[Self]:
-        return meta.Session.query(cls).filter_by(email=email).first()
+        return meta.Session.query(cls).filter_by(email=email, state='active').first()
 
     @classmethod
     def get(cls, user_reference: Optional[str]) -> Optional[Self]:
