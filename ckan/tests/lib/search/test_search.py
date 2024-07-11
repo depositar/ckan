@@ -109,13 +109,23 @@ def test_04_delete_package_from_dict():
         ("title:test AND organization:test-org", ""),
         ("{!bool must=test}", "bool"),
         (" {!bool must=test}", "bool"),
+        ("{!bool must='test string'}", "bool"),
+        ("{!bool must='test string'}solr rocks", "bool"),
+        (" {!bool must='test string'}solr rocks", "bool"),
+        (" {!bool must='test string'}", "bool"),
+        ("{!bool must='test string with \"quotes\"'}", "bool"),
         ("{!type=bool must=test}", "bool"),
+        ("{!type=bool must='test string'}", "bool"),
         ("{!must=test type=bool}", "bool"),
         ("{!must=test type=bool}solr rocks", "bool"),
+        ("{!must='test text' type=bool}solr rocks", "bool"),
         ("{!dismax qf=myfield}solr rocks", "dismax"),
+        ("{!type=dismax qf=myfield v='solr rocks'}", "dismax"),
         ("{!type=lucene df=summary}solr rocks", "lucene"),
+        ("{!v='lies type= here' type=dismax}", "dismax"),
         ("{!some_parser}", "some_parser"),
         ("{!dismax v=some_value}", "dismax"),
+        ("{!some_parser a='0.9' traversalFilter='foo:[*+TO+15]'}", "some_parser"),
         ("{!some_parser must=$ref}", "some_parser"),
     ]
 
@@ -128,7 +138,6 @@ def test_get_local_query_parser(query, parser):
 @pytest.mark.parametrize(
     "query",
     [
-        "{!bool must='test string'}",
         "{!v='lies type= here' some params",
         "{!v='lies type= here' v2='\\{some test \\} type=dismax}",
     ]
