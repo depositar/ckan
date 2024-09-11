@@ -35,7 +35,6 @@ from typing import Any
 import sys
 
 
-
 # not importing anything from ckan until after the arg parsing, to fail on bad
 # args quickly.
 
